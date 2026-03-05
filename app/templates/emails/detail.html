@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block page_title %}Email Draft | {{ email.client.name }}{% endblock %}
+{% block page_header %}Email Overview{% endblock %}
+
+{% block content %}
+<div class="grid-cols-3">
+    <div class="card" style="grid-column: span 2;">
+        <div class="card-header flex-between">
+            <span>Compose Email</span>
+            <span
+                class="badge badge-{% if email.status == 'sent' %}sent{% elif email.status == 'pending_approval' %}pending{% else %}draft{% endif %}">
+                {{ email.status|replace('_', ' ')|title }}
+            </span>
+        </div>
+        <div class="card-body">
+            <form method="post" action="{{ url_for('emails.edit', id=email.id) }}">
+                <div class="form-group">
+                    <label>To:</label>
+                    <input type="text" class="form-control" value="{{ email.client.name }} ({{ email.client.email }})"
+                        readonly style="background:#f3f4f6;">
+                </div>
+                <div class="form-group">
+                    <label>Subject:</label>
+                    <input type="text" name="subject" class="form-control" value="{{ email.subject }}" {% if
+                        email.status=='sent' %}readonly style="background:#f3f4f6;" {% endif %}>
+                </div>
+                <div class="form-group">
+                    <label>Body:</label>
+                    <textarea name="body" class="form-textarea" style="height:350px;" {% if email.status=='sent'
+                        %}readonly style="background:#f3f4f6;" {% endif %}>{{ email.body }}</textarea>
+                </div>
+
+                {% if email.status != 'sent' and email.status != 'failed' %}
+                <div class="flex-start" style="margin-top:2rem;">
+                    <button type="submit" class="btn btn-secondary"><i data-lucide="save"></i> Save Draft</button>
+                    <!-- Form actions external triggering -->
+                </div>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <div class="card" style="margin-bottom:1rem;">
+            <div class="card-header">Approval Actions</div>
+            <div class="card-body">
+                {% if email.status == 'pending_approval' or email.status == 'draft' %}
+                <form action="{{ url_for('emails.approve', id=email.id) }}" method="post" style="margin-bottom:1rem;">
+                    <button type="submit" class="btn btn-success" style="width:100%;"><i data-lucide="send"></i> Approve
+                        & Send Email</button>
+                </form>
+                <form action="{{ url_for('emails.reject', id=email.id) }}" method="post">
+                    <button type="submit" class="btn btn-danger" style="width:100%;"><i data-lucide="x"></i> Reject
+                        (Return to Draft)</button>
+                </form>
+                {% else %}
+                <div class="empty-state" style="padding: 1rem;">
+                    Cannot modify a {{ email.status }} email.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">Metadata</div>
+            <div class="card-body">
+                <div style="font-size:0.875rem;">
+                    <p style="margin-bottom:0.5rem;"><strong>Type:</strong> {{ email.email_type|title }}</p>
+                    <p style="margin-bottom:0.5rem;"><strong>Created:</strong> <br>{{
+                        email.created_at.strftime('%Y-%m-%d %H:%M:%S UTC') }}</p>
+                    {% if email.sent_at %}
+                    <p><strong>Delivered:</strong> <br>{{ email.sent_at.strftime('%Y-%m-%d %H:%M:%S UTC') }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

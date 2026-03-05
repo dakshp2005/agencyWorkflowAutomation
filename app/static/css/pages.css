@@ -1,0 +1,283 @@
+/* Page Specific Tweaks */
+
+/* Dashboard Feed */
+.activity-feed {
+    list-style: none;
+}
+
+.activity-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.activity-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--bg-tertiary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+}
+
+.activity-content {
+    flex: 1;
+}
+
+.client-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1.5rem;
+    gap: 1.5rem;
+}
+
+.tab-btn {
+    padding: 0.75rem 0;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-secondary);
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.tab-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Discovery Page Premium Styles */
+.discovery-container {
+    padding-bottom: 3rem;
+}
+
+.discovery-hero {
+    background: linear-gradient(135deg, var(--accent) 0%, #4f46e5 100%);
+    border-radius: var(--radius-lg);
+    padding: 3.5rem 2rem;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 2.5rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.discovery-hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -10%;
+    width: 70%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    transform: rotate(-15deg);
+}
+
+.discovery-hero-content {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 2rem;
+    color: white !important;
+}
+
+.discovery-hero-content h2,
+.discovery-hero-content p,
+.discovery-hero-content span {
+    color: white !important;
+}
+
+.discovery-hero-content p {
+    opacity: 0.9;
+}
+
+.discovery-hero-content .flex.gap-lg {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.search-box-wrapper {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius);
+    padding: 0.5rem;
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+    max-width: 700px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.search-box-wrapper:focus-within {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+}
+
+.search-input {
+    background: transparent;
+    border: none;
+    color: white;
+    padding: 0.75rem 1.25rem;
+    font-size: 1.125rem;
+    width: 100%;
+    font-weight: 500;
+}
+
+.search-input:focus {
+    outline: none;
+}
+
+.search-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.discover-btn-premium {
+    background: white;
+    color: var(--accent);
+    font-weight: 700;
+    padding: 0.75rem 2rem;
+    border-radius: var(--radius-sm);
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.discover-btn-premium:hover {
+    background: #f8fafc;
+    transform: scale(1.05);
+}
+
+.lead-card-premium {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.75rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-shadow: var(--shadow-sm);
+}
+
+.lead-card-premium:hover {
+    transform: translateY(-8px);
+    border-color: var(--accent);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.icp-score-pill {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--radius);
+    text-align: center;
+    min-width: 80px;
+    transition: all 0.3s;
+}
+
+.lead-card-premium:hover .icp-score-pill {
+    background: var(--bg-primary);
+    border-color: var(--accent-light);
+}
+
+.icp-score-value {
+    font-size: 1.75rem;
+    font-weight: 800;
+    display: block;
+    line-height: 1;
+    margin-bottom: 2px;
+}
+
+.icp-score-label {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--text-secondary);
+    letter-spacing: 0.1em;
+}
+
+.score-high {
+    color: var(--success);
+}
+
+.score-mid {
+    color: #f59e0b;
+}
+
+.score-low {
+    color: var(--text-muted);
+}
+
+.discovery-pipeline-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--bg-secondary);
+}
+
+.discovery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 1.5rem;
+}
+
+@media (max-width: 640px) {
+    .discovery-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.lead-status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.badge-qualified {
+    background: var(--success-light);
+    color: var(--success);
+}
+
+.badge-new {
+    background: var(--accent-light);
+    color: var(--accent);
+}
+
+.card-reasoning {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem 1rem;
+    margin: 1.25rem 0;
+    border-left: 3px solid var(--accent);
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}

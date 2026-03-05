@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block page_title %}Dashboard | Agency Automation{% endblock %}
+{% block page_header %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="grid-cols-4" style="margin-bottom: 2rem;">
+    <div class="stat-card">
+        <div class="stat-card-value">{{ stats.emails }}</div>
+        <div class="stat-card-label">Emails Sent Today</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card-value">{{ stats.replies }}</div>
+        <div class="stat-card-label">Replies Received</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card-value">{{ stats.meetings }}</div>
+        <div class="stat-card-label">Meetings This Week</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card-value">{{ stats.docs }}</div>
+        <div class="stat-card-label">Docs Generated</div>
+    </div>
+</div>
+
+<div class="card" style="margin-bottom: 2rem;">
+    <div class="card-header">Client Pipeline</div>
+    <div class="card-body">
+        <div class="flex-between" style="font-size:0.75rem; color:var(--text-secondary); margin-bottom:0.5rem;">
+            <span>New ({{ pipeline.new }})</span>
+            <span>Outreach ({{ pipeline.outreach_sent }})</span>
+            <span>Replied ({{ pipeline.replied }})</span>
+            <span>Meeting ({{ pipeline.meeting_scheduled }})</span>
+            <span>Proposal ({{ pipeline.proposal_sent }})</span>
+            <span>Converted ({{ pipeline.converted }})</span>
+        </div>
+        <div class="pipeline-bar">
+            {% set total = pipeline.values() | sum %}
+            {% if total == 0 %}{% set total = 1 %}{% endif %}
+            <div class="pipeline-segment" style="background:#e4e4e7; width:0%;"
+                data-width="{{ (pipeline.new/total)*100 }}"></div>
+            <div class="pipeline-segment" style="background:#3b82f6; width:0%;"
+                data-width="{{ (pipeline.outreach_sent/total)*100 }}"></div>
+            <div class="pipeline-segment" style="background:#8b5cf6; width:0%;"
+                data-width="{{ (pipeline.replied/total)*100 }}"></div>
+            <div class="pipeline-segment" style="background:#f59e0b; width:0%;"
+                data-width="{{ (pipeline.meeting_scheduled/total)*100 }}"></div>
+            <div class="pipeline-segment" style="background:#ec4899; width:0%;"
+                data-width="{{ (pipeline.proposal_sent/total)*100 }}"></div>
+            <div class="pipeline-segment" style="background:#10b981; width:0%;"
+                data-width="{{ (pipeline.converted/total)*100 }}"></div>
+        </div>
+    </div>
+</div>
+
+<div class="flex-start" style="margin-bottom: 2rem;">
+    <a href="{{ url_for('clients.new_client') }}" class="btn btn-primary"><i data-lucide="plus"></i> Add Client</a>
+    <button id="btn-fetch-replies" class="btn btn-secondary"><i data-lucide="refresh-cw"></i> Fetch Replies</button>
+</div>
+
+<div style="display:grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+    <!-- Recent Activity -->
+    <div class="card">
+        <div class="card-header">Recent Activity</div>
+        <div class="card-body">
+            {% if recent_activity %}
+            <ul class="activity-feed">
+                {% for log in recent_activity %}
+                <li class="activity-item">
+                    <div class="activity-icon"><i data-lucide="activity"></i></div>
+                    <div class="activity-content">
+                        <div style="margin-bottom:0.25rem;">
+                            <strong>{{ log.client.name if log.client else 'System' }}</strong> &mdash; {{
+                            log.description }}
+                        </div>
+                        <div style="font-size:0.75rem; color:var(--text-secondary);">
+                            {{ log.timestamp.strftime('%Y-%m-%d %H:%M') }} | {{ log.action_type }}
+                        </div>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <div class="empty-state">
+                <i data-lucide="clock"></i>
+                <h3>No activity yet</h3>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Approvals -->
+    <div>
+        <h3 style="margin-bottom:1rem; font-size:1.125rem;">Pending Approvals</h3>
+        {% if pending_emails or pending_docs %}
+        {% for email in pending_emails %}
+        <div class="approval-card">
+            <div class="approval-card-content">
+                <div style="font-size:0.75rem; color:var(--text-secondary); margin-bottom:0.25rem;">Email Draft • {{
+                    email.client.name }}</div>
+                <div style="font-weight:600; margin-bottom:0.5rem;">{{ email.subject }}</div>
+                <div style="font-size:0.875rem; color:var(--text-secondary); max-height:40px; overflow:hidden;">{{
+                    email.body }}</div>
+            </div>
+            <div class="approval-card-actions">
+                <button class="btn btn-success btn-sm btn-approve" data-type="email" data-id="{{ email.id }}"><i
+                        data-lucide="check"></i></button>
+                <button class="btn btn-danger btn-sm btn-reject" data-type="email" data-id="{{ email.id }}"><i
+                        data-lucide="x"></i></button>
+                <a href="{{ url_for('emails.detail', id=email.id) }}" class="btn btn-secondary btn-sm"><i
+                        data-lucide="eye"></i></a>
+            </div>
+        </div>
+        {% endfor %}
+        {% for doc in pending_docs %}
+        <div class="approval-card" style="border-left-color: #8b5cf6;">
+            <div class="approval-card-content">
+                <div style="font-size:0.75rem; color:var(--text-secondary); margin-bottom:0.25rem;">{{
+                    doc.doc_type|title }} • {{ doc.client.name }}</div>
+                <div style="font-weight:600;">{{ doc.title }}</div>
+            </div>
+            <div class="approval-card-actions">
+                <button class="btn btn-success btn-sm btn-approve" data-type="proposal" data-id="{{ doc.id }}"><i
+                        data-lucide="check"></i></button>
+                <button class="btn btn-danger btn-sm btn-reject" data-type="proposal" data-id="{{ doc.id }}"><i
+                        data-lucide="x"></i></button>
+                <a href="{{ url_for('documents.detail', id=doc.id) }}" class="btn btn-secondary btn-sm"><i
+                        data-lucide="eye"></i></a>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="empty-state card" style="border:1px dashed var(--border);">
+            <i data-lucide="check-circle" style="color:var(--success);"></i>
+            <h4>All caught up!</h4>
+            <p>No pending approvals.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

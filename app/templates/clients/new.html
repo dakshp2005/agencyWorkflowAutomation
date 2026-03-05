@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block page_title %}New Client | Agency Automation{% endblock %}
+{% block page_header %}Add New Client{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 800px; margin: 0 auto;">
+    <div class="card-header">Client Details</div>
+    <div class="card-body">
+        <form method="post">
+            <div class="grid-cols-2">
+                <div class="form-group">
+                    <label>Full Name *</label>
+                    <input type="text" name="name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Email Address *</label>
+                    <input type="email" name="email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Company Name</label>
+                    <input type="text" name="company" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Industry</label>
+                    <input type="text" name="industry" class="form-control" placeholder="e.g. Healthcare, SaaS">
+                </div>
+                <div class="form-group">
+                    <label>Website</label>
+                    <input type="url" name="website" class="form-control" placeholder="https://...">
+                </div>
+                <div class="form-group">
+                    <label>Phone</label>
+                    <input type="text" name="phone" class="form-control">
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-top:1rem;">
+                <label>Requirements & Preferences</label>
+                <textarea name="preferences" class="form-textarea"
+                    placeholder="Specific pain points, product interests, tone constraints..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Internal Notes</label>
+                <textarea name="notes" class="form-textarea"></textarea>
+            </div>
+
+            <div style="margin-top: 1.5rem; display:flex; justify-content:flex-end; gap: 1rem;">
+                <a href="{{ url_for('clients.index') }}" class="btn btn-ghost">Cancel</a>
+                <button type="submit" class="btn btn-primary"><i data-lucide="check"></i> Add Client & Start
+                    Outreach</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

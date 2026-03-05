@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block page_title %}{{ client.name }} | Client Details{% endblock %}
+{% block page_header %}Client Details{% endblock %}
+
+{% block content %}
+<div class="card" style="margin-bottom: 2rem;">
+    <div class="card-body flex-between">
+        <div style="display:flex; gap: 1.5rem; align-items:center;">
+            <div
+                style="width: 64px; height: 64px; border-radius: 50%; background: var(--border-strong); display:flex; align-items:center; justify-content:center; font-size: 1.5rem; font-weight:700;">
+                {{ client.name[0] }}
+            </div>
+            <div>
+                <h2 style="font-size:1.5rem; margin-bottom:0.25rem;">{{ client.name }}</h2>
+                <div style="color:var(--text-secondary);">{{ client.company }} • {{ client.industry }}</div>
+            </div>
+        </div>
+        <div style="text-align:right;">
+            <div class="badge badge-{% if client.status == 'converted' %}positive{% elif client.status == 'new' %}neutral{% else %}pending{% endif %}"
+                style="margin-bottom:0.5rem; font-size:0.875rem;">
+                {{ client.status|replace('_', ' ')|title }}
+            </div>
+            <div style="font-size:0.875rem; color:var(--text-secondary);">Added: {{
+                client.created_at.strftime('%Y-%m-%d') }}</div>
+        </div>
+    </div>
+</div>
+
+<div class="flex-start" style="margin-bottom: 2rem;">
+    <button id="btn-generate-email" data-client="{{ client.id }}" class="btn btn-primary"><i data-lucide="mail"></i>
+        Generate Outreach Email</button>
+    <button id="btn-generate-proposal" data-client="{{ client.id }}" class="btn btn-secondary"><i
+            data-lucide="file-text"></i> Generate Proposal</button>
+</div>
+
+<div class="client-tabs">
+    <button class="tab-btn active" data-target="tab-overview">Overview</button>
+    <button class="tab-btn" data-target="tab-emails">Emails</button>
+    <button class="tab-btn" data-target="tab-activities">Timeline</button>
+</div>
+
+<div id="tab-overview" class="tab-content active">
+    <form method="post" action="{{ url_for('clients.edit', id=client.id) }}">
+        <div class="grid-cols-2">
+            <div class="form-group"><label>Name</label><input type="text" name="name" class="form-control"
+                    value="{{ client.name }}"></div>
+            <div class="form-group"><label>Email</label><input type="email" name="email" class="form-control"
+                    value="{{ client.email }}" readonly style="background:#f3f4f6; color:#9ca3af;"></div>
+            <div class="form-group"><label>Company</label><input type="text" name="company" class="form-control"
+                    value="{{ client.company }}"></div>
+            <div class="form-group"><label>Industry</label><input type="text" name="industry" class="form-control"
+                    value="{{ client.industry }}"></div>
+            <div class="form-group"><label>Website</label><input type="text" name="website" class="form-control"
+                    value="{{ client.website }}"></div>
+            <div class="form-group"><label>Phone</label><input type="text" name="phone" class="form-control"
+                    value="{{ client.phone }}"></div>
+        </div>
+        <div class="form-group"><label>Preferences</label><textarea name="preferences"
+                class="form-textarea">{{ client.preferences }}</textarea></div>
+        <div class="form-group"><label>Internal Notes</label><textarea name="notes"
+                class="form-textarea">{{ client.notes }}</textarea></div>
+        <div style="margin-top: 1rem;"><button type="submit" class="btn btn-secondary"><i data-lucide="save"></i> Save
+                Changes</button></div>
+    </form>
+</div>
+
+<div id="tab-emails" class="tab-content">
+    {% set items = client.emails %}
+    {% include 'components/table_fallback.html' ignore missing %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Subject</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for em in client.emails %}
+            <tr>
+                <td><a href="{{ url_for('emails.detail', id=em.id) }}">{{ em.subject }}</a></td>
+                <td>{{ em.email_type|title }}</td>
+                <td><span
+                        class="badge badge-{% if em.status == 'sent' %}sent{% elif em.status == 'pending_approval' %}pending{% else %}neutral{% endif %}">{{
+                        em.status|title }}</span></td>
+                <td>{{ em.created_at.strftime('%Y-%m-%d') }}</td>
+            </tr>
+            {% else %}<tr>
+                <td colspan="4" class="empty-state">No emails configured.</td>
+            </tr>{% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div id="tab-activities" class="tab-content">
+    <ul class="activity-feed">
+        {% for log in client.logs|sort(attribute='timestamp', reverse=True) %}
+        <li class="activity-item">
+            <div class="activity-icon"><i data-lucide="history"></i></div>
+            <div class="activity-content">
+                <strong>{{ log.action_type|replace('_', ' ')|title }}</strong>
+                <p style="margin:0.25rem 0;">{{ log.description }}</p>
+                <div style="font-size:0.75rem; color:var(--text-secondary);">{{ log.timestamp.strftime('%Y-%m-%d %H:%M')
+                    }}</div>
+            </div>
+        </li>
+        {% else %}
+        <li class="empty-state">No timeline activity.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/clients.js') }}"></script>
+{% endblock %}

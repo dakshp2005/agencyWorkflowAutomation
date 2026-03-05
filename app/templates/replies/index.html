@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block page_title %}Replies | Agency Automation{% endblock %}
+{% block page_header %}Inbox Replies{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header border-bottom flex-between">
+        <span>Inbound Clarifications</span>
+        <button id="btn-fetch-replies" class="btn btn-secondary btn-sm"><i data-lucide="refresh-cw"></i> Fetch
+            Inbox</button>
+    </div>
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Sender</th>
+                    <th>Subject</th>
+                    <th>Classification</th>
+                    <th>Entities Extracted</th>
+                    <th>Action Taken</th>
+                    <th>Time Processed</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reply in replies %}
+                <tr>
+                    <td><strong>{{ reply.client.name if reply.client else reply.sender_email }}</strong></td>
+                    <td>{{ reply.subject[:40] }}{% if reply.subject|length > 40 %}...{% endif %}</td>
+                    <td>
+                        <span
+                            class="badge badge-{% if reply.classification == 'POSITIVE' %}positive{% elif reply.classification == 'NEGATIVE' %}negative{% else %}neutral{% endif %}">
+                            {{ reply.classification }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if reply.extracted_entities %}
+                        <div style="font-size:0.75rem; color:var(--text-secondary);">
+                            {% if reply.extracted_entities.dates %}Dates: {{ reply.extracted_entities.dates|join(', ')
+                            }}<br>{% endif %}
+                            {% if reply.extracted_entities.companies %}Co: {{ reply.extracted_entities.companies|join(',
+                            ') }}{% endif %}
+                        </div>
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+                    <td>{{ reply.action_taken|replace('_', ' ')|title }}</td>
+                    <td>{{ reply.processed_at.strftime('%m/%d %H:%M') }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" class="empty-state">No replies processed yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

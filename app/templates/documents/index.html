@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block page_title %}Documents Directory | Agency Automation{% endblock %}
+{% block page_header %}Generated Documents{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header border-bottom">
+        <span>Documents Ledger</span>
+    </div>
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Client</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th>Date Generated</th>
+                    <th class="table-actions">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for doc in documents %}
+                <tr>
+                    <td><strong>{{ doc.title }}</strong></td>
+                    <td>{{ doc.client.name }}</td>
+                    <td>
+                        <span class="badge badge-neutral">
+                            <i data-lucide="file-text" style="width:12px; height:12px; margin-right:4px;"></i> {{
+                            doc.doc_type|title }}
+                        </span>
+                    </td>
+                    <td>
+                        <span
+                            class="badge badge-{% if doc.status == 'approved' or doc.status == 'delivered' %}positive{% elif doc.status == 'pending_approval' %}pending{% else %}draft{% endif %}">
+                            {{ doc.status|replace('_', ' ')|title }}
+                        </span>
+                    </td>
+                    <td>{{ doc.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                    <td class="table-actions">
+                        <a href="{{ url_for('documents.detail', id=doc.id) }}" class="btn btn-ghost btn-sm"><i
+                                data-lucide="eye"></i></a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" class="empty-state">No documents generated yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

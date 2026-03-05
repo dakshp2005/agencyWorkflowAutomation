@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block page_title %}Clients | Agency Automation{% endblock %}
+{% block page_header %}Clients{% endblock %}
+
+{% block content %}
+<div class="card" style="margin-bottom: 2rem;">
+    <div class="card-header border-bottom flex-between">
+        <span>Client Directory</span>
+        <a href="{{ url_for('clients.new_client') }}" class="btn btn-primary btn-sm"><i data-lucide="plus"></i> Add
+            Client</a>
+    </div>
+    <div class="card-body">
+        <div style="margin-bottom:1rem; display:flex; justify-content:flex-end;">
+            <form method="get" class="flex-start">
+                <select name="status" class="form-select" onchange="this.form.submit()" style="width:200px;">
+                    <option value="">All Statuses</option>
+                    <option value="new" {% if current_filter=='new' %}selected{% endif %}>New</option>
+                    <option value="outreach_sent" {% if current_filter=='outreach_sent' %}selected{% endif %}>Outreach
+                        Sent</option>
+                    <option value="replied" {% if current_filter=='replied' %}selected{% endif %}>Replied</option>
+                    <option value="meeting_scheduled" {% if current_filter=='meeting_scheduled' %}selected{% endif %}>
+                        Meeting Scheduled</option>
+                    <option value="proposal_sent" {% if current_filter=='proposal_sent' %}selected{% endif %}>Proposal
+                        Sent</option>
+                    <option value="converted" {% if current_filter=='converted' %}selected{% endif %}>Converted</option>
+                    <option value="not_interested" {% if current_filter=='not_interested' %}selected{% endif %}>Not
+                        Interested</option>
+                </select>
+            </form>
+        </div>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Company</th>
+                    <th>Industry</th>
+                    <th>Status</th>
+                    <th>Last Active</th>
+                    <th class="table-actions">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for client in clients %}
+                <tr>
+                    <td><strong>{{ client.name }}</strong><br><span
+                            style="font-size:0.75rem; color:var(--text-secondary);">{{ client.email }}</span></td>
+                    <td>{{ client.company }}</td>
+                    <td>{{ client.industry }}</td>
+                    <td>
+                        <span
+                            class="badge badge-{% if client.status == 'converted' %}positive{% elif client.status == 'not_interested' %}negative{% elif client.status == 'new' %}neutral{% elif client.status == 'outreach_sent' %}sent{% elif client.status == 'replied' %}pending{% else %}neutral{% endif %}">
+                            {{ client.status|replace('_', ' ')|title }}
+                        </span>
+                    </td>
+                    <td style="font-size:0.875rem">{{ client.updated_at.strftime('%Y-%m-%d') }}</td>
+                    <td class="table-actions">
+                        <a href="{{ url_for('clients.detail', id=client.id) }}" class="btn btn-ghost btn-sm">View</a>
+                        <button class="btn btn-ghost btn-sm" id="btn-generate-email" data-client="{{ client.id }}"
+                            onclick="document.getElementById('btn-generate-email').dataset.client = '{{ client.id }}'"><i
+                                data-lucide="mail"></i></button>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">No clients
+                        found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/clients.js') }}"></script>
+{% endblock %}

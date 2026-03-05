@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block page_title %}Outreach Emails | Agency Automation{% endblock %}
+{% block page_header %}Outreach Emails{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header flex-between">
+        <span>Email Records</span>
+        <div class="flex-start">
+            <a href="?status="
+                class="btn {% if not current_filter %}btn-secondary{% else %}btn-ghost{% endif %} btn-sm">All</a>
+            <a href="?status=pending_approval"
+                class="btn {% if current_filter == 'pending_approval' %}btn-secondary{% else %}btn-ghost{% endif %} btn-sm">Pending</a>
+            <a href="?status=sent"
+                class="btn {% if current_filter == 'sent' %}btn-secondary{% else %}btn-ghost{% endif %} btn-sm">Sent</a>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Client</th>
+                    <th>Subject</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th>Created At</th>
+                    <th class="table-actions">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in emails %}
+                <tr>
+                    <td><a href="{{ url_for('clients.detail', id=row.client_id) }}"><strong>{{ row.client.name
+                                }}</strong></a></td>
+                    <td>{{ row.subject[:40] }}{% if row.subject|length > 40 %}...{% endif %}</td>
+                    <td><span class="badge badge-neutral">{{ row.email_type }}</span></td>
+                    <td>
+                        <span
+                            class="badge badge-{% if row.status == 'sent' %}sent{% elif row.status == 'pending_approval' %}pending{% elif row.status == 'failed' %}negative{% else %}draft{% endif %}">
+                            {{ row.status|replace('_', ' ')|title }}
+                        </span>
+                    </td>
+                    <td>{{ row.created_at.strftime('%m/%d/%y %H:%M') }}</td>
+                    <td class="table-actions">
+                        <a href="{{ url_for('emails.detail', id=row.id) }}" class="btn btn-ghost btn-sm">View</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" class="empty-state">No emails found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
