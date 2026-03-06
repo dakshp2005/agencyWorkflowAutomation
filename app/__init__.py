@@ -14,7 +14,7 @@ def create_app(config_class=DevelopmentConfig):
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'
     
-    from app.models import client, email_record, reply, meeting, document, rag_document, interaction_log
+    from app.models import client, email_record, reply, meeting, document, rag_document, interaction_log, notification
     
     from app.routes.discovery import bp as discovery_bp
     from app.routes.dashboard import bp as dashboard_bp
@@ -25,6 +25,7 @@ def create_app(config_class=DevelopmentConfig):
     from app.routes.documents import bp as documents_bp
     from app.routes.api import bp as api_bp
     from app.routes.auth import bp as auth_bp
+    from app.routes.notifications import bp as notifications_bp
     
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(clients_bp, url_prefix='/clients')
@@ -35,6 +36,7 @@ def create_app(config_class=DevelopmentConfig):
     app.register_blueprint(api_bp, url_prefix='/api')
     app.register_blueprint(auth_bp)
     app.register_blueprint(discovery_bp)
+    app.register_blueprint(notifications_bp)
     
     with app.app_context():
         db.create_all()

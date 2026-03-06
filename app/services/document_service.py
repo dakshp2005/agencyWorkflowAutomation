@@ -7,6 +7,7 @@ from app.models.interaction_log import InteractionLog
 from app.models.client import Client
 from app.services.rag_service import rag_service
 from app.services.slack_service import slack_service
+from app.services.notification_service import notification_service
 from app.extensions import db
 from app.services.ai_utils import extract_json
 
@@ -77,6 +78,9 @@ Return ONLY the proposal content in markdown. No JSON wrapper.
         db.session.commit()
         
         rag_service.add_document(content, client_id, "proposal")
+        
+        # Create notification for document approval
+        notification_service.notify_document_approval_required(doc.id, client.name, title)
         
         slack_service.notify_approval_required(
             action_type="proposal",

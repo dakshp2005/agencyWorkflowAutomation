@@ -1,71 +1,135 @@
-{% extends "base.html" %}
-
-{% block page_title %}Meeting | {{ meeting.client.name }}{% endblock %}
-{% block page_header %}Meeting Details{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% block page_title %}Meeting | {{ meeting.client.name
+}}{% endblock %} {% block page_header %}Meeting Details{% endblock %} {% block
+content %}
 <div class="grid-cols-3">
-    <div class="card" style="grid-column: span 2;">
-        <div class="card-header border-bottom flex-between">
-            <span>Meeting Agenda & Setup</span>
-            <span
-                class="badge badge-{% if meeting.status == 'confirmed' %}positive{% elif meeting.status == 'cancelled' %}negative{% else %}pending{% endif %}">
-                {{ meeting.status|title }}
-            </span>
-        </div>
-        <div class="card-body">
-            <div style="margin-bottom: 2rem;">
-                <h3 style="font-size: 1.125rem; margin-bottom: 0.5rem;">Agenda Overview</h3>
-                <div
-                    style="background: var(--bg-secondary); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">
-                    {{ meeting.agenda }}
-                </div>
-            </div>
-
-            {% if meeting.status == 'proposed' %}
-            <h3 style="font-size: 1.125rem; margin-bottom: 1rem;">Confirm Proposed Slot</h3>
-            <div class="grid-cols-2">
-                {% for slot in meeting.proposed_slots %}
-                <form action="{{ url_for('meetings.confirm', id=meeting.id) }}" method="post"
-                    style="border: 1px solid var(--border); padding: 1rem; border-radius: var(--radius-sm);">
-                    <input type="hidden" name="slot" value="{{ slot }}">
-                    <div style="font-weight: 500; margin-bottom: 0.5rem;">{{ slot|replace('T', ' ')[:16] }} UTC</div>
-                    <button type="submit" class="btn btn-primary btn-sm" style="width: 100%;">Confirm Slot</button>
-                </form>
-                {% endfor %}
-            </div>
-            {% elif meeting.status == 'confirmed' %}
-            <div
-                style="padding: 1rem; border-left: 4px solid var(--success); background: var(--success-light); margin-bottom: 1rem;">
-                <strong>Confirmed Time:</strong> {{ meeting.confirmed_slot|replace('T', ' ')[:16] }} UTC
-            </div>
-            {% if meeting.meeting_link %}
-            <a href="{{ meeting.meeting_link }}" target="_blank" class="btn btn-primary"><i data-lucide="video"></i>
-                Join Calendar Event</a>
-            {% endif %}
-            {% endif %}
-        </div>
+  <div class="card" style="grid-column: span 2">
+    <div class="card-header border-bottom flex-between">
+      <span>Meeting Agenda & Setup</span>
+      <span
+        class="badge badge-{% if meeting.status == 'confirmed' %}positive{% elif meeting.status == 'cancelled' %}negative{% else %}pending{% endif %}"
+      >
+        {{ meeting.status|title }}
+      </span>
     </div>
-
-    <div>
-        <div class="card">
-            <div class="card-header">Client Info</div>
-            <div class="card-body">
-                <div style="margin-bottom: 0.5rem;"><strong>Name:</strong> {{ meeting.client.name }}</div>
-                <div style="margin-bottom: 0.5rem;"><strong>Company:</strong> {{ meeting.client.company }}</div>
-                <div style="margin-bottom: 0.5rem;"><strong>Email:</strong> <a
-                        href="mailto:{{ meeting.client.email }}">{{ meeting.client.email }}</a></div>
-            </div>
-            <div class="card-footer" style="display:flex; justify-content:flex-end;">
-                {% if meeting.status != 'cancelled' %}
-                <form action="{{ url_for('meetings.cancel', id=meeting.id) }}" method="post"
-                    onsubmit="return confirm('Are you sure you want to cancel this meeting?');">
-                    <button type="submit" class="btn btn-danger btn-sm"><i data-lucide="x-circle"></i> Cancel
-                        Meeting</button>
-                </form>
-                {% endif %}
-            </div>
+    <div class="card-body">
+      <div style="margin-bottom: 2rem">
+        <h3 style="font-size: 1.125rem; margin-bottom: 0.5rem">
+          Agenda Overview
+        </h3>
+        <div
+          style="
+            background: var(--bg-secondary);
+            padding: 1rem;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+          "
+        >
+          {{ meeting.agenda }}
         </div>
+      </div>
+
+      {% if meeting.status == 'proposed' %}
+      <h3 style="font-size: 1.125rem; margin-bottom: 1rem">
+        Confirm Proposed Slot
+      </h3>
+      <div class="grid-cols-2">
+        {% for slot in meeting.proposed_slots %}
+        <form
+          action="{{ url_for('meetings.confirm', id=meeting.id) }}"
+          method="post"
+          style="
+            border: 1px solid var(--border);
+            padding: 1rem;
+            border-radius: var(--radius-sm);
+          "
+        >
+          <input type="hidden" name="slot" value="{{ slot }}" />
+          <div style="font-weight: 500; margin-bottom: 0.5rem">
+            {{ (slot|replace('T', ' '))[0:16] }} UTC
+          </div>
+          <button
+            type="submit"
+            class="btn btn-primary btn-sm"
+            style="width: 100%"
+          >
+            Confirm Slot
+          </button>
+        </form>
+        {% endfor %}
+      </div>
+      {% elif meeting.status == 'confirmed' %}
+      <div
+        style="
+          padding: 1rem;
+          border-left: 4px solid var(--success);
+          background: var(--success-light);
+          margin-bottom: 1rem;
+        "
+      >
+        <strong>Confirmed Time:</strong> {{ (meeting.confirmed_slot|replace('T',
+        ' '))[0:16] }} UTC
+      </div>
+      {% if meeting.meeting_link %}
+      <a
+        href="{{ meeting.meeting_link }}"
+        target="_blank"
+        class="btn btn-primary"
+        ><i data-lucide="video"></i> Join Calendar Event</a
+      >
+      {% endif %} {% endif %}
     </div>
+  </div>
+
+  <div>
+    <div class="card">
+      <div class="card-header">Client Info</div>
+      <div class="card-body">
+        <div style="margin-bottom: 0.5rem">
+          <strong>Name:</strong> {{ meeting.client.name }}
+        </div>
+        <div style="margin-bottom: 0.5rem">
+          <strong>Company:</strong> {{ meeting.client.company }}
+        </div>
+        <div style="margin-bottom: 0.5rem">
+          <strong>Email:</strong>
+          <a href="mailto:{{ meeting.client.email }}"
+            >{{ meeting.client.email }}</a
+          >
+        </div>
+      </div>
+      <div
+        class="card-footer"
+        style="display: flex; justify-content: space-between"
+      >
+        <div>
+          {% if meeting.status != 'cancelled' and meeting.status != 'completed'
+          %}
+          <a
+            href="{{ url_for('meetings.edit', id=meeting.id) }}"
+            class="btn btn-secondary btn-sm"
+          >
+            <i data-lucide="edit"></i> Edit Meeting
+          </a>
+          {% endif %}
+        </div>
+        <div>
+          {% if meeting.status != 'cancelled' %}
+          <form
+            action="{{ url_for('meetings.cancel', id=meeting.id) }}"
+            method="post"
+            style="display: inline"
+            onsubmit="
+              return confirm('Are you sure you want to cancel this meeting?');
+            "
+          >
+            <button type="submit" class="btn btn-danger btn-sm">
+              <i data-lucide="x-circle"></i> Cancel Meeting
+            </button>
+          </form>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}

@@ -1,0 +1,79 @@
+{% extends "base.html" %} {% block page_title %}Edit Meeting | Agency
+Automation{% endblock %} {% block page_header %}Edit Meeting{% endblock %} {%
+block content %}
+<div class="card" style="max-width: 800px; margin: 0 auto">
+  <div class="card-header border-bottom">
+    <span>Edit Meeting Details</span>
+  </div>
+  <div class="card-body">
+    <form action="{{ url_for('meetings.edit', id=meeting.id) }}" method="post">
+      <div class="form-group">
+        <label for="client_id">Client</label>
+        <select
+          name="client_id"
+          id="client_id"
+          class="form-control"
+          disabled
+          style="background: #f3f4f6; color: #9ca3af"
+        >
+          <option value="{{ meeting.client_id }}" selected>
+            {{ meeting.client.name }} - {{ meeting.client.company }}
+          </option>
+        </select>
+        <small style="color: var(--text-secondary); font-size: 0.875rem">
+          Client cannot be changed after meeting creation
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label for="agenda">Meeting Agenda *</label>
+        <textarea
+          name="agenda"
+          id="agenda"
+          class="form-textarea"
+          rows="5"
+          required
+        >
+{{ meeting.agenda }}</textarea
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="proposed_slots">Proposed Time Slots</label>
+        <input
+          type="text"
+          name="proposed_slots"
+          id="proposed_slots"
+          class="form-control"
+          value="{% if meeting.proposed_slots %}{{ meeting.proposed_slots|join(', ') }}{% endif %}"
+          placeholder="e.g., 2026-03-10T14:00, 2026-03-11T10:00"
+        />
+        <small style="color: var(--text-secondary); font-size: 0.875rem">
+          Enter comma-separated date-time values in ISO format
+          (YYYY-MM-DDTHH:MM)
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label>Status</label>
+        <span
+          class="badge badge-{% if meeting.status == 'confirmed' %}positive{% elif meeting.status == 'cancelled' %}negative{% else %}pending{% endif %}"
+        >
+          {{ meeting.status|title }}
+        </span>
+      </div>
+
+      <div style="margin-top: 2rem; display: flex; gap: 1rem">
+        <button type="submit" class="btn btn-primary">
+          <i data-lucide="save"></i> Save Changes
+        </button>
+        <a
+          href="{{ url_for('meetings.detail', id=meeting.id) }}"
+          class="btn btn-ghost"
+          >Cancel</a
+        >
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

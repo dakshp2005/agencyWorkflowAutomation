@@ -1,49 +1,60 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% block page_title %}Meetings | Agency Automation{%
+endblock %} {% block page_header %}Scheduled Meetings{% endblock %} {% block
+content %}
+<div class="flex-between" style="margin-bottom: 1.5rem">
+  <div></div>
+  <a href="{{ url_for('meetings.new') }}" class="btn btn-primary">
+    <i data-lucide="calendar-plus"></i> Schedule New Meeting
+  </a>
+</div>
 
-{% block page_title %}Meetings | Agency Automation{% endblock %}
-{% block page_header %}Scheduled Meetings{% endblock %}
-
-{% block content %}
 <div class="card">
-    <div class="card-header border-bottom">
-        <span>Meeting Directory</span>
-    </div>
-    <div class="card-body">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Client</th>
-                    <th>Status</th>
-                    <th>Agenda Summary</th>
-                    <th>Confirmed Slot</th>
-                    <th>Created</th>
-                    <th class="table-actions">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for meet in meetings %}
-                <tr>
-                    <td><strong>{{ meet.client.name }}</strong></td>
-                    <td>
-                        <span
-                            class="badge badge-{% if meet.status == 'confirmed' %}positive{% elif meet.status == 'cancelled' %}negative{% elif meet.status == 'completed' %}neutral{% else %}pending{% endif %}">
-                            {{ meet.status|title }}
-                        </span>
-                    </td>
-                    <td>{{ meet.agenda[:50] }}{% if meet.agenda|length > 50 %}...{% endif %}</td>
-                    <td>{{ meet.confirmed_slot or 'Awaiting Confirmation' }}</td>
-                    <td>{{ meet.created_at.strftime('%Y-%m-%d') }}</td>
-                    <td class="table-actions">
-                        <a href="{{ url_for('meetings.detail', id=meet.id) }}" class="btn btn-ghost btn-sm">View</a>
-                    </td>
-                </tr>
-                {% else %}
-                <tr>
-                    <td colspan="6" class="empty-state">No meetings found.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+  <div class="card-header border-bottom">
+    <span>Meeting Directory</span>
+  </div>
+  <div class="card-body">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Client</th>
+          <th>Status</th>
+          <th>Agenda Summary</th>
+          <th>Confirmed Slot</th>
+          <th>Created</th>
+          <th class="table-actions">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for meet in meetings %}
+        <tr>
+          <td><strong>{{ meet.client.name }}</strong></td>
+          <td>
+            <span
+              class="badge badge-{% if meet.status == 'confirmed' %}positive{% elif meet.status == 'cancelled' %}negative{% elif meet.status == 'completed' %}neutral{% else %}pending{% endif %}"
+            >
+              {{ meet.status|title }}
+            </span>
+          </td>
+          <td>
+            {{ meet.agenda[:50] }}{% if meet.agenda|length > 50 %}...{% endif %}
+          </td>
+          <td>{{ meet.confirmed_slot or 'Awaiting Confirmation' }}</td>
+          <td>{{ meet.created_at.strftime('%Y-%m-%d') }}</td>
+          <td class="table-actions">
+            <a
+              href="{{ url_for('meetings.detail', id=meet.id) }}"
+              class="btn btn-ghost btn-sm"
+              >View</a
+            >
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="6" class="empty-state">No meetings found.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </div>
 {% endblock %}

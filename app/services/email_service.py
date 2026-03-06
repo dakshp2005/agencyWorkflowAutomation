@@ -4,6 +4,7 @@ from email.mime.multipart import MIMEMultipart
 import google.generativeai as genai
 from app.services.rag_service import rag_service
 from app.services.slack_service import slack_service
+from app.services.notification_service import notification_service
 from app.models.email_record import EmailRecord
 from app.models.client import Client
 from app.models.interaction_log import InteractionLog
@@ -88,6 +89,9 @@ No extra text, no markdown, just the JSON.
         
         # Add generated email to RAG for future context
         rag_service.add_document(f"Subject: {data['subject']}\n{data['body']}", client_id, "email")
+        
+        # Create notification for email approval
+        notification_service.notify_email_approval_required(record.id, client.name, data['subject'])
         
         # Notify operator via Slack
         slack_service.notify_approval_required(

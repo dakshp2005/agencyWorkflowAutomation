@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block page_title %}Upload Document | Agency Automation{% endblock %}
+{% block page_header %}Upload New Document{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 800px; margin: 0 auto;">
+    <div class="card-header border-bottom">
+        <span>Upload Document</span>
+    </div>
+    <div class="card-body">
+        <form action="{{ url_for('documents.upload') }}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="client_id">Client *</label>
+                <select name="client_id" id="client_id" class="form-control" required>
+                    <option value="">-- Select a Client --</option>
+                    {% for client in clients %}
+                    <option value="{{ client.id }}" {% if request.args.get('client_id') == client.id|string %}selected{% endif %}>
+                        {{ client.name }} - {{ client.company }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="title">Document Title *</label>
+                <input type="text" name="title" id="title" class="form-control" required 
+                    placeholder="e.g., Project Proposal - Q1 2026">
+            </div>
+            
+            <div class="form-group">
+                <label for="doc_type">Document Type *</label>
+                <select name="doc_type" id="doc_type" class="form-control" required>
+                    <option value="proposal">Proposal</option>
+                    <option value="report">Report</option>
+                    <option value="summary">Summary</option>
+                    <option value="followup">Follow-up</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="file">Select File *</label>
+                <input type="file" name="file" id="file" class="form-control" required 
+                    accept=".txt,.pdf,.doc,.docx,.md,.html">
+                <small style="color: var(--text-secondary); font-size: 0.875rem;">
+                    Allowed formats: TXT, PDF, DOC, DOCX, MD, HTML (Max 10MB)
+                </small>
+            </div>
+            
+            <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+                <button type="submit" class="btn btn-primary">
+                    <i data-lucide="upload"></i> Upload Document
+                </button>
+                <a href="{{ url_for('documents.index') }}" class="btn btn-ghost">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
