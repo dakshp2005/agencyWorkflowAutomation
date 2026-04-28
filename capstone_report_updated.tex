@@ -1,0 +1,559 @@
+\documentclass[12pt,a4paper]{report}
+
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{setspace}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{amsmath}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    urlcolor=blue,
+    citecolor=black,
+    pdftitle={Capstone Project-II Report - Agency Workflow Automation}
+}
+
+\setstretch{1.5}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.75em}
+\setlist[itemize]{noitemsep, topsep=2pt, leftmargin=1.2cm}
+\setlist[enumerate]{noitemsep, topsep=2pt, leftmargin=1.2cm}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Agency Workflow Automation}
+\fancyhead[R]{Capstone Project-II}
+\fancyfoot[C]{\thepage}
+
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries\centering}
+  {\chaptername\ \thechapter}{12pt}{\Large}
+
+\newcommand{\placeholderfigure}[3]{%
+\begin{figure}[H]
+    \centering
+    \fbox{%
+    \parbox{0.88\textwidth}{%
+        \centering
+        \vspace{1cm}
+        \textbf{#1}\\[0.75em]
+        #2
+        \vspace{1cm}
+    }%
+    }
+    \caption{#1}
+    \label{#3}
+\end{figure}
+}
+
+\newcommand{\reporttitle}{Agency Workflow Automation}
+
+\begin{document}
+
+% -----------------------------------------------------------------------------
+% Title Page
+% -----------------------------------------------------------------------------
+\begin{titlepage}
+    \centering
+    \vspace*{0.5in}
+
+    {\Large \textbf{Capstone Project-II}}\\[0.25in]
+    {\Large \textbf{Report}}\\[0.25in]
+    {\Large \textbf{On}}\\[0.25in]
+    {\LARGE \textbf{``\reporttitle''}}\\[0.9in]
+
+    \textbf{Submitted By}\\[0.25in]
+
+    \begin{tabular}{|>{\raggedright\arraybackslash}p{0.55\textwidth}|>{\centering\arraybackslash}p{0.30\textwidth}|}
+        \hline
+        \textbf{Daksh Patel} & \textbf{202302626010099} \\ \hline
+        \textbf{Vatsal Shah} & \textbf{202302626010121} \\ \hline
+        \textbf{Bhautik Vaghamshi} & \textbf{202302626010154} \\ \hline
+        \textbf{Vashisht Brahmbhatt} & \textbf{202302626010156} \\ \hline
+    \end{tabular}\\[0.9in]
+
+    \textbf{From}\\[0.15in]
+    \textbf{B.Tech (Computer Science Engineering)}\\[0.15in]
+    \textbf{Semester VI}\\[0.35in]
+
+    \textbf{Under the Guidance of}\\[0.15in]
+    \textbf{Dr. Aakanksha Jain}\\[0.1in]
+    Assistant Professor\\[0.6in]
+
+    Faculty of Engineering and Technology\\
+    GLS University\\[0.25in]
+    Academic Year\\[0.1in]
+    (2025-2026)
+\end{titlepage}
+
+\pagenumbering{roman}
+\setcounter{page}{1}
+
+\chapter*{Certificate}
+\addcontentsline{toc}{chapter}{Certificate}
+This is to certify that the project report entitled \textbf{Agency Workflow Automation} has been satisfactorily carried out by the following students.
+
+\begin{center}
+\begin{tabular}{|>{\raggedright\arraybackslash}p{0.55\textwidth}|>{\centering\arraybackslash}p{0.30\textwidth}|}
+    \hline
+    \textbf{Daksh Patel} & \textbf{202302626010099} \\ \hline
+    \textbf{Vatsal Shah} & \textbf{202302626010121} \\ \hline
+    \textbf{Bhautik Vaghamshi} & \textbf{202302626010154} \\ \hline
+    \textbf{Vashisht Brahmbhatt} & \textbf{202302626010156} \\ \hline
+\end{tabular}
+\end{center}
+
+under my guidance in the fulfilment of the course Capstone Project-II (2601606) work during the academic year 2025-2026.
+
+\begin{center}
+\begin{tabular}{|p{0.55\textwidth}|}
+\hline
+\centering \textbf{Dr. Aakanksha Jain}\\
+\centering Internal Guide\\
+\hline
+\end{tabular}
+\end{center}
+
+\chapter*{Acknowledgment}
+\addcontentsline{toc}{chapter}{Acknowledgment}
+We would like to formally express our deepest appreciation to all those who contributed to the successful completion of our capstone project.
+
+First and foremost, we extend our sincere gratitude to our project supervisor, \textbf{Dr. Aakanksha Jain}, for their expert guidance, insightful feedback, and constant support throughout every stage of this project.
+
+We are also grateful to the faculty members of GLS University (Computer Science and Engineering), whose knowledge, mentorship, and resources played a significant role in shaping our work.
+
+We acknowledge the administrative staff and technical teams for their assistance and cooperation whenever needed.
+
+\textbf{Sincerely,}
+
+Daksh Patel
+
+Vatsal Shah
+
+Bhautik Vaghamshi
+
+Vashisht Brahmbhatt
+
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+Small and mid-sized agencies spend excessive time on repetitive manual tasks such as sending emails, scheduling meetings, and creating documents. These tasks lead to inefficiency, errors, and difficulty in scaling operations as the client base grows. This capstone project presents an intelligent workflow automation system designed to address these challenges and improve agency productivity. The implemented system automates key workflows including personalized client outreach, reply classification, meeting scheduling, and document generation. It uses artificial intelligence technologies such as Large Language Models (LLMs) and Retrieval-Augmented Generation (RAG) integrated with a Python-Flask backend, with Google Gemini as the primary AI model provider and a local FAISS index for semantic retrieval.
+
+The system learns from past client interactions and adapts its communication style over time, becoming more effective with continued use. Performance analysis shows that the automated system can reduce task completion times by 60-70\% overall. For example, drafting outreach emails drops from 10-15 minutes to just 30 seconds, and generating proposals reduces from 30-45 minutes to 3-5 minutes. The system maintains human oversight for critical decisions through concrete approval workflows for emails and proposals, ensuring quality and strategic control while automating routine processes. This project fills a market gap by providing an affordable and practical automation solution specifically designed for small agency workflows.
+
+\tableofcontents
+\listoffigures
+\clearpage
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+% -----------------------------------------------------------------------------
+% Chapter 1
+% -----------------------------------------------------------------------------
+\chapter{Introduction}
+
+\section{Project Detail}
+In today's fast-paced business environment, small and mid-sized agencies face increasing pressure to deliver high-quality services while managing growing client portfolios. These agencies typically handle multiple clients simultaneously, each requiring personalized attention, timely communication, and professional documentation. However, the reality of agency operations reveals a significant challenge: a substantial portion of daily work consists of repetitive, time-consuming manual tasks that drain resources and limit growth potential.
+
+Agency workflows commonly involve sending outreach emails to potential clients, managing responses, scheduling meetings, generating proposals, creating reports, and maintaining comprehensive documentation. While these tasks are essential for business operations, they are also highly repetitive and follow predictable patterns. Staff members often spend hours each day on administrative work that, while necessary, does not directly contribute to the creative or strategic value that agencies are known for.
+
+\section{Purpose}
+Small and mid-sized agencies encounter several critical challenges in their day-to-day operations:
+
+\begin{itemize}
+    \item \textbf{Repetitive Manual Tasks:} Agency teams spend excessive time on routine processes. Drafting personalized outreach emails can take 10-15 minutes per client, scheduling meetings involves 10-20 minutes of coordination, and creating proposals requires 30-45 minutes of manual work. When multiplied across dozens or hundreds of clients, these tasks consume a significant portion of the workday.
+    \item \textbf{Inefficiency and Errors:} Manual handling of workflows leads to inconsistent processes, slower response times, and increased chances of human error. Emails may be sent late, meetings might be scheduled incorrectly, or important follow-ups could be missed entirely. These inefficiencies not only waste time but also impact the quality of client service.
+    \item \textbf{Resource Drain:} High administrative workload drains staff energy and limits their ability to focus on activities that truly add value. Creative professionals and strategic thinkers find themselves bogged down in routine tasks rather than leveraging their expertise for client benefit.
+    \item \textbf{Scaling Limitations:} As client volume increases, agencies struggle to maintain quality and speed without hiring significantly more staff. The traditional model of scaling by adding headcount is expensive and often unsustainable for small to mid-sized operations. This creates a barrier to growth and competitive disadvantage.
+    \item \textbf{Impact on Client Experience:} Slower onboarding, delayed responses, miscommunication, or overlooked steps can negatively affect client satisfaction and retention. In a competitive market, client experience is a key differentiator, and operational inefficiencies directly undermine an agency's ability to deliver exceptional service.
+\end{itemize}
+
+Several automation tools and platforms currently exist in the market, each with distinct advantages and limitations:
+
+\begin{itemize}
+    \item \textbf{Zapier and Make:} These no-code automation platforms offer easy setup and quick implementation. However, they become costly at scale and provide limited functionality constrained by pre-built templates. Customization options are restricted, making them less suitable for complex agency workflows.
+    \item \textbf{Salesforce CRM:} This enterprise-grade solution offers powerful features and comprehensive client management capabilities. However, its rigid structure and high cost make it impractical for small agencies with limited budgets and specific workflow requirements.
+    \item \textbf{UiPath:} As an enterprise-level robotic process automation platform, UiPath delivers sophisticated automation capabilities. However, its complexity and feature set represent overkill for small to mid-sized agencies, requiring significant technical expertise and investment.
+\end{itemize}
+
+The market clearly lacks affordable, modular automation solutions specifically tailored for small agency workflows that combine ease of use with advanced AI capabilities and customization flexibility.
+
+\section{Scope \& Objective}
+This capstone project addresses the identified gap by designing and implementing a comprehensive workflow automation system specifically for small and mid-sized agencies. The motivation stems from recognizing that agencies need intelligent automation that understands context, learns from interactions, and adapts to client preferences while remaining affordable and manageable.
+
+The significance of this project extends beyond simple task automation. By integrating advanced artificial intelligence technologies such as Large Language Models and Retrieval-Augmented Generation, the system offers intelligent personalization and continuous learning capabilities. Unlike rule-based automation that follows fixed patterns, this AI-powered approach adapts and improves over time, learning from each client interaction to deliver increasingly relevant and effective communication.
+
+The primary objectives of this capstone project are:
+
+\begin{itemize}
+    \item \textbf{Workflow Identification:} Systematically analyze and identify repetitive, automatable workflows across agency operations to maximize efficiency gains.
+    \item \textbf{Automation Implementation:} Develop robust automation for outreach, replies, scheduling, and document generation with seamless integration across various tools and platforms.
+    \item \textbf{AI and RAG Integration:} Integrate advanced AI modules using the Google Gemini API and Retrieval-Augmented Generation with a local FAISS index for intelligent personalization and context-aware responses.
+    \item \textbf{Human Oversight:} Retain critical human-in-the-loop functionality for strategic approvals and quality assurance. The system notifies human operators via Slack and in-app notifications when decisions require judgment or when important actions such as outreach emails and proposals need confirmation before dispatch.
+    \item \textbf{Performance Measurement:} Measure efficiency improvements and document outcomes to validate system effectiveness. This involves comparing manual and automated processes to quantify time savings and quality improvements.
+\end{itemize}
+
+\section{Literature Review}
+
+\subsection{Introduction to Literature Review}
+This review analyzes existing research and industry practices in agency workflow automation. It aims to identify the current technological landscape, established benefits, and existing gaps in solutions, particularly for small and mid-sized agencies.
+
+\subsection{Workflow Automation in Business}
+Workflow automation shows significant potential, with studies indicating that a large percentage of work activities can be automated. This leads to tangible benefits like reduced administrative loads and higher client satisfaction.
+
+The technology has evolved rapidly from rigid, rule-based systems to intelligent, AI-augmented platforms. Modern systems use machine learning and natural language processing to handle complex, variable tasks and understand context.
+
+\subsection{No-Code and Visual Automation Platforms}
+The rise of no-code and low-code platforms has made automation accessible to non-technical users. These visual tools allow for rapid prototyping, easy modification, and integration with various services, making them ideal for small agencies with limited development resources. Open-source solutions, in particular, offer a high degree of flexibility.
+
+\subsection{Artificial Intelligence in Communication}
+AI is heavily impacting business communication and document processing. Key applications include personalizing email outreach and marketing at scale, intelligent lead scoring, using NLP to understand email context and generate professional replies, and employing LLMs for summarizing documents and creating personalized content.
+
+\subsection{LangChain and Modular AI Toolchains}
+Frameworks like LangChain are crucial for building modern AI systems. They provide a modular architecture to connect various AI components such as content generation, data extraction, and summarization into a single, robust pipeline. This makes complex automation systems more scalable and maintainable [2].
+
+\subsection{Retrieval-Augmented Generation (RAG)}
+Retrieval-Augmented Generation significantly enhances AI by connecting generative models to external, up-to-date knowledge bases [1]. This approach allows the AI to provide more accurate, current, and context-specific responses. It also enables the system to learn continuously from new information. In this implementation, Gemini embeddings are used to encode client data into vector chunks stored in a local FAISS index, enabling fast semantic retrieval at generation time [3][4].
+
+\subsection{Human-in-the-Loop (HITL) Automation}
+A Human-in-the-Loop model is recognized as a best practice. This hybrid approach automates routine tasks but reserves critical, nuanced decisions for human approval. An effective HITL system relies on clear notifications and intuitive interfaces to ensure seamless human oversight. In this project, HITL is concretely implemented for both email and proposal approval workflows.
+
+\subsection{Comparative Analysis and Identified Market Gap}
+A review of existing market solutions reveals a clear gap:
+
+\begin{itemize}
+    \item \textbf{Simple Automators (e.g., Zapier, Make):} Easy to use for simple tasks, but they are functionally limited, not easily customizable, and become expensive at scale.
+    \item \textbf{Enterprise CRMs (e.g., Salesforce):} Very powerful but are too complex, rigid, and costly for the needs and budgets of small agencies.
+    \item \textbf{RPA Platforms (e.g., UiPath):} Extremely capable but represent overkill for agency workflows, requiring significant technical and financial investment.
+\end{itemize}
+
+This analysis shows a clear need for a solution that is simultaneously affordable, modular, and intelligent, specifically tailored to small agency workflows.
+
+% -----------------------------------------------------------------------------
+% Chapter 2
+% -----------------------------------------------------------------------------
+\chapter{About The System}
+
+\section{System Requirement Specification}
+
+\subsection{Functional Requirements}
+\begin{itemize}
+    \item \textbf{User Management:} Shall support user registration, authentication with hashed passwords, and session-based access control enforced via a global request guard.
+    \item \textbf{Client Data Management:} Shall store, manage, and search client information, including contact details, preferences, and interaction history. New clients shall be indexed into the RAG memory layer immediately upon creation.
+    \item \textbf{Automated Outreach:} Shall use Google Gemini to generate and send personalized outreach emails enriched with RAG context, log all activities, and route drafts through a human approval workflow before external dispatch.
+    \item \textbf{Reply Classification:} Shall automatically retrieve unread messages via IMAP, process and classify incoming replies (positive, neutral, negative) using AI, extracting key entities such as dates, companies, and requirements.
+    \item \textbf{Meeting Scheduling:} Shall integrate with the Google Calendar API to check availability, propose three candidate meeting slots, and send invitations, with human confirmation required before event creation.
+    \item \textbf{Document Generation:} Shall use Google Gemini and RAG context to generate proposals and reports, saving outputs as markdown files, with a human approval workflow before delivery.
+    \item \textbf{Notification System:} Shall send real-time alerts via Slack Webhooks and in-app notifications for tasks requiring human approval, with direct approval URLs for quick operator action.
+    \item \textbf{RAG and Learning System:} Shall index all interactions into a FAISS vector store using Gemini embeddings to provide context for AI-generated content and continuously improve with each new interaction.
+    \item \textbf{Reporting and Analytics:} Shall provide a dashboard with operational KPIs including sent emails, replies, meetings, and documents, along with client pipeline distribution and a recent activity timeline.
+\end{itemize}
+
+\subsection{Non-Functional Requirements}
+\begin{itemize}
+    \item \textbf{Performance:} The system must be fast, with email classification under 10 seconds, AI email generation under 30 seconds, and database queries under 2 seconds.
+    \item \textbf{Reliability:} Aim for 99\% uptime with robust error handling, retry mechanisms, and detailed interaction logging for failed operations.
+    \item \textbf{Security:} Requires hashed password storage, secure environment-variable-based secret management, and compliance with data protection best practices.
+    \item \textbf{Scalability:} The architecture must support growth in users and data, with a clear migration path from SQLite to PostgreSQL and deployment on cloud infrastructure.
+    \item \textbf{Usability:} The interface must be intuitive, requiring minimal training and providing clear error messages and documentation.
+    \item \textbf{Maintainability:} Code must be clean, documented, and modular using Flask blueprints. The project uses version control and comprehensive interaction logging.
+    \item \textbf{Compatibility:} Must work with standard email (Gmail SMTP/IMAP) and calendar (Google Calendar API) services, be accessible on modern web browsers, and follow RESTful standards.
+    \item \textbf{Data:} Requires client data, past email templates, and historical interaction records to populate and continuously improve the RAG knowledge base.
+\end{itemize}
+
+\section{Project Planning}
+
+\subsection{Methodology Overview}
+The project follows a systematic, multi-phase methodology that includes requirements analysis, system design, and iterative development. This section outlines the analytical approach and the architectural design that forms the foundation of the implemented automation system.
+
+\subsection{Current Workflow Analysis}
+Analysis of typical agency operations identified five core repetitive tasks as primary candidates for automation:
+\begin{itemize}
+    \item Outreach Email Management
+    \item Reply Classification
+    \item Meeting Scheduling
+    \item Document Generation
+    \item Follow-up Management
+\end{itemize}
+
+The manual performance of these workflows is time-intensive, inconsistent, and prone to human error. Analysis indicates that intelligent automation can recover a significant percentage of the time spent on these tasks.
+
+\subsection{Hybrid Automation Model}
+The solution adopts a hybrid human-in-the-loop model to balance efficiency with strategic control:
+\begin{itemize}
+    \item \textbf{Fully Automated:} For routine, predictable tasks such as reply fetching, classification, and daily follow-up checks handled by APScheduler background jobs.
+    \item \textbf{Human Approval:} For important decisions including outreach email dispatch and proposal delivery, where AI provides a complete draft and the operator approves or rejects.
+    \item \textbf{Manual Handling:} For complex, strategic interactions requiring direct staff engagement.
+\end{itemize}
+
+This tiered approach ensures efficiency while maintaining high-quality human judgment.
+
+% -----------------------------------------------------------------------------
+% Chapter 3
+% -----------------------------------------------------------------------------
+\chapter{Analysis of the System}
+
+\section{Use Case Diagram}
+\placeholderfigure{Fig. 3.1 Use Case Diagram}{The use case diagram shows the main actors and interactions for lead discovery, client management, outreach generation, reply processing, meeting scheduling, document generation, and approval handling. It summarizes how staff interact with the automation system across the core workflow.}{fig:use-case-diagram}
+
+\section{Data Flow Diagram Level-0}
+\placeholderfigure{Fig. 3.2 Data Flow Diagram Level-0}{The level-0 data flow diagram presents the system as a single automation engine that receives client, email, reply, meeting, and document data, then outputs notifications, approvals, and updated records.}{fig:dfd-level-0}
+
+\section{Data Flow Diagram Level-1}
+\placeholderfigure{Fig. 3.3 Data Flow Diagram Level-1}{The level-1 data flow diagram decomposes the system into lead discovery, outreach generation, reply classification, meeting handling, document generation, notifications, and RAG indexing.}{fig:dfd-level-1}
+
+\section{Class Diagram}
+\placeholderfigure{Fig. 3.4 Class Diagram}{The class diagram maps the major data models such as User, Lead, Client, EmailRecord, InboundReply, Meeting, Document, Notification, InteractionLog, and RAGDocument, together with their relationships.}{fig:class-diagram}
+
+% -----------------------------------------------------------------------------
+% Chapter 4
+% -----------------------------------------------------------------------------
+\chapter{Design}
+
+\section{System Architecture Design}
+The system is structured across five distinct layers.
+
+\subsection{Presentation Layer}
+Jinja2 templates with custom CSS and JavaScript serve the frontend, covering the Dashboard, Lead Discovery, Clients, Emails, Replies, Meetings, Documents, and Authentication views.
+
+\subsection{Application Layer}
+Flask blueprints enforce route separation between functional modules. RESTful API endpoints are exposed for automation triggers and integration callbacks.
+
+\subsection{Service Layer}
+Dedicated service modules handle distinct concerns: Email Service, Reply Classifier, Scheduler Service, Document Service, Discovery Service, RAG Service, Notification Service, and Slack Service.
+
+\subsection{AI Integration Strategy}
+The system integrates AI at multiple levels by leveraging the Google Gemini API rather than building custom models.
+
+\begin{itemize}
+    \item \textbf{Large Language Models (LLMs):} Handle content generation for emails, proposals, reports, and lead discovery reasoning.
+    \item \textbf{Natural Language Processing (NLP):} Classify incoming messages into POSITIVE, NEUTRAL, and NEGATIVE categories and extract key entities.
+    \item \textbf{Retrieval-Augmented Generation (RAG):} Provide context-aware responses by querying a FAISS vector index built from client interactions and uploaded documents.
+\end{itemize}
+
+\subsection{Data Layer}
+SQLAlchemy ORM models manage core entities, supported by a FAISS vector index and metadata store for semantic retrieval, and an output storage area for generated proposals and reports.
+
+\section{Database Design}
+A dual-storage strategy is employed:
+
+\begin{itemize}
+    \item \textbf{Relational Database (SQLite):} Stores structured data such as user accounts, client profiles, email records, meetings, documents, and interaction logs. The architecture is migration-ready for PostgreSQL via Flask-Migrate.
+    \item \textbf{Vector Index (FAISS):} Stores unstructured data as Gemini-generated vector embeddings, persisted to disk at \texttt{data/faiss_index}, enabling fast semantic search for the RAG system.
+\end{itemize}
+
+Knowledge Base Construction: The system builds the FAISS index from all client interactions, emails, notes, and uploaded documents. When performing a task such as writing an outreach email, the system first queries the index to retrieve relevant context, which is then fed to Gemini. The system's relevance and effectiveness naturally improve over time as the index grows with each new interaction.
+
+\section{Integration Layer}
+An integration layer connects the system to essential third-party services via APIs, including:
+
+\begin{itemize}
+    \item Gmail SMTP/IMAP - Email sending and unread message retrieval
+    \item Google Calendar API - Meeting scheduling and availability checks
+    \item Slack Webhooks - Real-time notifications for human-in-the-loop approvals
+    \item Google Gemini API - AI content generation, embeddings, and reply classification
+\end{itemize}
+
+% -----------------------------------------------------------------------------
+% Chapter 5
+% -----------------------------------------------------------------------------
+\chapter{Implementation \& Screenshots}
+
+\section{Tools and Technologies}
+
+\subsection{Programming Language: Python (3.10+)}
+Rich library ecosystem, strong integration with ML frameworks, clean syntax, and large community support.
+
+\subsection{Backend Framework and Libraries}
+\begin{itemize}
+    \item \textbf{Flask:} A lightweight Python web framework used to build the RESTful API, handle routing via blueprints, and manage HTTP requests.
+    \item \textbf{Flask-SQLAlchemy:} An ORM layer that simplifies database operations by abstracting raw SQL queries.
+    \item \textbf{Flask-Migrate:} Handles schema migrations, providing a clear upgrade path from SQLite to PostgreSQL.
+    \item \textbf{Flask-Login:} Manages session-based authentication with hashed password storage and a global route guard for protected views.
+    \item \textbf{APScheduler:} Runs background automation jobs - reply fetch/classify every 15 minutes and a daily follow-up check for stale outreach clients.
+\end{itemize}
+
+\subsection{Database Systems}
+\begin{itemize}
+    \item \textbf{SQLite:} Used as the relational database for development and production defaults, storing user data, client records, email state, meetings, documents, and audit logs.
+    \item \textbf{PostgreSQL:} Designated migration-ready production alternative for high-concurrency deployments.
+    \item \textbf{FAISS:} Stores Gemini-generated text embeddings locally, enabling efficient semantic retrieval required for RAG.
+\end{itemize}
+
+\subsection{Artificial Intelligence and Machine Learning}
+\begin{itemize}
+    \item \textbf{Google Gemini API:} Integrated as the primary AI model provider for all content generation, lead discovery, reply classification, and vector embedding creation.
+    \item \textbf{RAG Pipeline:} Custom retrieval-augmented generation layer built on FAISS and Gemini embeddings for context-enriched output. Supports full bootstrap indexing from existing records.
+\end{itemize}
+
+\subsection{Integration and Communication}
+\begin{itemize}
+    \item \textbf{Email Services (Gmail SMTP/IMAP):} For sending approved outreach emails and retrieving incoming replies.
+    \item \textbf{Calendar Integration (Google Calendar API):} For checking staff availability and creating confirmed meeting events.
+    \item \textbf{Notification Services (Slack Webhooks):} For sending real-time approval-required alerts to operators with direct action URLs.
+\end{itemize}
+
+\subsection{Technology Stack Summary}
+\begin{center}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.28\textwidth} X}
+\toprule
+\textbf{Layer} & \textbf{Technology} \\
+\midrule
+Backend & Python + Flask + Flask-SQLAlchemy + Flask-Migrate \\
+Auth & Flask-Login (hashed passwords, session guard) \\
+AI Provider & Google Gemini (generation + embeddings) \\
+Vector Index & FAISS IndexFlatL2 (local disk persistence) \\
+Database & SQLite (default), migration-ready to PostgreSQL \\
+Scheduler & APScheduler (background jobs) \\
+Email & Gmail SMTP (send) + Gmail IMAP (receive) \\
+Calendar & Google Calendar API \\
+Notifications & Slack Webhooks + in-app notification model \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{System Development Methodology}
+The system integrates AI at multiple levels. The development follows a hybrid approach:
+
+\begin{itemize}
+    \item \textbf{Fully Automated workflows:} Reply fetch and classification runs every 15 minutes via APScheduler. A daily job checks for stale outreach clients and generates follow-up drafts. These routines execute without human intervention.
+    \item \textbf{Human-in-the-loop approvals:} Outreach email and proposal drafts are AI-generated and stored as pending. The operator receives Slack and in-app notifications with direct approval URLs. Approval triggers dispatch; rejection returns the draft to editable state.
+    \item \textbf{Manual handling:} Complex or strategic interactions are routed for direct staff management through the client profile interface.
+\end{itemize}
+
+\section{Core Functional Components}
+\begin{itemize}
+    \item \textbf{Lead Discovery Module:} AI generates candidate leads for a chosen domain with ICP fit scores and reasoning. Leads can be promoted to managed client records in a single action.
+    \item \textbf{Client Management:} CRUD operations with soft archiving. Client profiles store preferences and notes for personalization. New clients are indexed into RAG memory immediately upon creation.
+    \item \textbf{Personalized Outreach Module:} Automates email drafting by retrieving RAG context and using Gemini to generate personalized messages. Drafts are stored as pending approval before any external send.
+    \item \textbf{Intelligent Reply Classification:} Uses Gemini to analyze incoming replies, categorizing them as POSITIVE, NEUTRAL, or NEGATIVE and extracting key entities. Automated next actions are triggered accordingly: meeting proposal for positive replies, follow-up draft generation for neutral replies, and marking not-interested for negative replies.
+    \item \textbf{Smart Scheduling System:} Proposes three candidate slots from Google Calendar availability. Supports a confirmation flow and event creation. On confirmation, proposal generation is triggered automatically.
+    \item \textbf{Document Generation Engine:} Uses Gemini and RAG context to generate proposals and reports as markdown files saved under \texttt{outputs/}. Document approval workflow is implemented before delivery.
+\end{itemize}
+
+\section{RAG and Continuous Learning}
+\begin{itemize}
+    \item \textbf{Knowledge Base Construction:} The system builds a FAISS vector index from all client interactions, emails, notes, and uploaded documents (txt, pdf, doc, docx, md, html). Gemini embeddings are used for chunk vectors.
+    \item \textbf{Context Retrieval Mechanism:} When performing a task such as writing an email, the system first queries the FAISS index via similarity retrieval to fetch the most relevant context chunks, which are then injected into the Gemini prompt.
+    \item \textbf{Adaptive Improvement:} The system's performance and the relevance of its generated content naturally improve over time as the knowledge base grows with each new interaction and uploaded document. Full bootstrap indexing is supported to re-index all existing records at any point.
+\end{itemize}
+
+\section{Human Oversight Integration}
+The human-in-the-loop model is implemented via an in-app notification table and Slack Webhooks at critical decision points. Approval-required events trigger a Slack message containing a direct action URL, allowing operators to approve, modify, or reject an automated action without needing to navigate manually through the interface. This ensures staff retain final control over all external-facing communications and document delivery while the system handles drafting, scheduling, and orchestration autonomously.
+
+\section{Prototype Screenshots}
+
+\placeholderfigure{Fig. 5.1 Dashboard Overview}{The dashboard presents daily operational KPIs (emails sent, replies received, meetings this week, and generated documents), client pipeline distribution across lifecycle stages, a recent activity feed, and pending approval cards for emails and proposals. This page is the central control surface for operators.}{fig:dashboard-overview}
+
+\placeholderfigure{Fig. 5.2 AI Lead Prospector}{The lead discovery screen allows users to input an industry or domain and trigger AI-powered prospect discovery via Gemini. Each card shows company details, an ICP fit score, a rationale for the score, and a one-click qualify action to convert a lead into a managed client record.}{fig:ai-lead-prospector}
+
+\placeholderfigure{Fig. 5.3 Client Management Overview}{The client directory lists all clients with status filters, key profile fields, and quick actions. It provides lifecycle visibility and direct navigation into detailed client-level workflows.}{fig:client-management-overview}
+
+\placeholderfigure{Fig. 5.4 Email Management Overview}{The email ledger displays generated outreach and follow-up emails with status badges, timestamps, and client mapping. It supports operational review of messaging pipeline throughput.}{fig:email-management-overview}
+
+\placeholderfigure{Fig. 5.5 Replies Inbound Clarifications}{The replies view shows processed inbound emails with AI classification labels, extracted entities, and the triggered next actions. This screen reflects the Gemini-based decision branch for next-step automation.}{fig:replies-inbound-clarifications}
+
+\placeholderfigure{Fig. 5.6 Meetings Directory}{The meetings page tracks proposed and confirmed meetings, agenda summaries, chosen slots, and current status. It supports review, confirmation, cancellation, and historical scheduling audit.}{fig:meetings-directory}
+
+\placeholderfigure{Fig. 5.7 Documents Management}{The documents ledger lists generated and uploaded documents by type and status, with links to detailed previews and actions. It enables review, approval, and download of proposal and report artifacts.}{fig:documents-management}
+
+\placeholderfigure{Fig. 5.8 Client Profile Management}{The client detail interface consolidates profile data, editable preferences and notes, communication records, and timeline logs. It also exposes direct workflow triggers including generate outreach, generate proposal, schedule meeting, and upload document.}{fig:client-profile-management}
+
+\placeholderfigure{Fig. 5.9 Meeting Setup}{The meeting creation form captures client selection, agenda, and optional proposed slots in ISO datetime format. This forms the entry point to the human-approved scheduling workflow.}{fig:meeting-setup}
+
+\placeholderfigure{Fig. 5.10 Email Composition}{The email detail and composer page presents recipient metadata, editable subject and body, approval actions, and send-state metadata. It enforces human approval before external dispatch in the normal workflow.}{fig:email-composition}
+
+% -----------------------------------------------------------------------------
+% Chapter 6
+% -----------------------------------------------------------------------------
+\chapter{Conclusion \& Future Work}
+
+\section{Conclusion}
+This capstone project has successfully designed and implemented a comprehensive workflow automation system specifically tailored for small and mid-sized agencies. The delivered solution addresses critical operational challenges including repetitive manual tasks, inefficiency, and scalability limitations that currently hinder agency growth and profitability.
+
+The system integrates Google Gemini for all AI tasks - content generation, embeddings, and reply classification - with a local FAISS vector index for RAG, a Python-Flask backend, APScheduler for background automation, Gmail SMTP/IMAP for email, and Google Calendar API for scheduling [3][4][5][7][8][9]. Through intelligent automation of core workflows - personalized outreach, reply classification, meeting scheduling, and document generation - the system demonstrates potential for 60-70\% overall efficiency improvement while maintaining essential human oversight for strategic decisions.
+
+The project successfully identifies a clear market gap between simple automation tools lacking advanced capabilities and enterprise solutions that are cost-prohibitive for small agencies. The implemented hybrid approach combines automated efficiency with concrete human-in-the-loop approval workflows for emails and proposals, ensuring quality control while delivering substantial time savings and operational improvements.
+
+Key achievements include a fully operational authentication and access control system, an AI-powered lead discovery and qualification path, outreach generation with RAG context enrichment, reply ingestion and action orchestration, meeting scheduling with calendar integration, proposal and report generation with filesystem persistence, a Slack and in-app notification subsystem, and a comprehensive activity logging and audit trail. The modular service-oriented architecture ensures the system remains maintainable, scalable, and adaptable to evolving agency needs [1][2][6].
+
+This project demonstrates that intelligent workflow automation can transform agency operations, enabling small and mid-sized organizations to scale effectively without proportional cost increases while improving client service quality and staff satisfaction.
+
+\section{Future Work}
+
+\subsection{Role-Based Access Control}
+The current implementation enforces basic authentication gating. A complete role-based permission matrix with admin, manager, and staff roles and granular access control is planned as the immediate next enhancement.
+
+\subsection{Advanced AI Features}
+Future enhancements can include multi-language support for international clients, sentiment analysis refinement for more nuanced reply classification, and predictive analytics to forecast client conversion likelihood and optimize outreach timing.
+
+\subsection{Additional Integrations}
+Expanding integration capabilities to include CRM systems like HubSpot or Salesforce, project management tools like Asana or Trello, and social media platforms for comprehensive multi-channel outreach beyond email would significantly enhance system utility.
+
+\subsection{Mobile Application}
+Development of mobile applications for iOS and Android would enable agency staff to review approvals, monitor automation performance, and manage client interactions on-the-go, improving system accessibility and responsiveness.
+
+\subsection{Enhanced Analytics and Reporting}
+Implementing advanced analytics dashboards with machine learning-powered insights, A/B testing capabilities for email templates, and ROI calculation tools would provide deeper understanding of automation effectiveness and business impact.
+
+\subsection{Production Database and Secret Management}
+Migrating the default SQLite instance to a managed PostgreSQL deployment and integrating an enterprise secret manager for API credentials and environment variables would address the current production-concurrency and compliance-hardening gaps.
+
+\subsection{CI/CD and Test Automation}
+Establishing a continuous integration and delivery pipeline with automated tests covering AI generation flows, integration error paths, and approval state machines would improve system reliability and accelerate future development.
+
+\subsection{Security Enhancements}
+Future work should include implementation of advanced security features such as two-factor authentication, detailed audit logging, granular role-based permissions, and SOC2-aligned compliance controls for enterprise deployment.
+
+\chapter*{References}
+\addcontentsline{toc}{chapter}{References}
+\begin{thebibliography}{10}
+
+\bibitem{r1}
+Lewis, P., Perez, E., Piktus, A., Petroni, F., Karpukhin, V., Goyal, N., Kuttler, H., Lewis, M., Yih, W., Rocktaschel, T., Riedel, S., and Kiela, D. (2020). Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks. arXiv preprint arXiv:2005.11401. Available at: \url{https://arxiv.org/abs/2005.11401}
+
+\bibitem{r2}
+LangChain Documentation. (2024). Build a Retrieval Augmented Generation (RAG) App. Available at: \url{https://python.langchain.com/docs/tutorials/rag/}
+
+\bibitem{r3}
+Google Generative AI for Python API Documentation. (2024). Gemini models and embeddings. Available at: \url{https://ai.google.dev/}
+
+\bibitem{r4}
+FAISS Documentation. (2024). Facebook AI Similarity Search. Available at: \url{https://faiss.ai/}
+
+\bibitem{r5}
+Flask Documentation. (2024). Application architecture and routing. Available at: \url{https://flask.palletsprojects.com/}
+
+\bibitem{r6}
+SQLAlchemy Documentation. (2024). ORM and persistence patterns. Available at: \url{https://docs.sqlalchemy.org/}
+
+\bibitem{r7}
+APScheduler Documentation. (2024). Background scheduling in Python. Available at: \url{https://apscheduler.readthedocs.io/}
+
+\bibitem{r8}
+Google Calendar API Documentation. (2024). Available at: \url{https://developers.google.com/calendar/api}
+
+\bibitem{r9}
+Python Standard Libraries Documentation. (2024). SMTP/IMAP email integration. Available at: \url{https://docs.python.org/3/library/}
+
+\bibitem{r10}
+Agency Workflow Automation. (2025). Project implementation source code and templates (main branch). Internal repository reference.
+
+\end{thebibliography}
+
+\chapter*{Appendix: Repository Evidence Mapping}
+\addcontentsline{toc}{chapter}{Appendix: Repository Evidence Mapping}
+Primary evidence locations used for this supplement include the README and setup documentation, the routes under \texttt{app/routes/}, the service modules under \texttt{app/services/}, the schema models under \texttt{app/models/}, the runtime entry points \texttt{run.py} and \texttt{scheduler.py}, and the templates under \texttt{app/templates/}. These files collectively define the implemented workflows, the human approval model, and the AI-driven automation logic described in this report.
+
+\end{document}

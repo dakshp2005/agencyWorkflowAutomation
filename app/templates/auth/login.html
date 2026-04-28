@@ -1,51 +1,67 @@
-{% extends "base.html" %}
-{% block title %}Login - Agency Automation{% endblock %}
+{% extends "auth/auth_base.html" %} {% block title %}Sign In — Agency
+Automation{% endblock %} {% block content %}
+<div class="auth-card">
+  <div class="auth-card-header">
+    <h1 class="auth-card-title">Welcome back</h1>
+    <p class="auth-card-subtitle">Sign in to your workspace</p>
+  </div>
 
-{% block content %}
-<div class="login-container flex align-center justify-center p-xl" style="min-height: 80vh;">
-    <div class="card p-xl shadow-md"
-        style="width: 100%; max-width: 400px; background: var(--bg-surface); border-radius: 8px;">
-        <div class="flex flex-col align-center gap-sm mb-lg">
-            <h1 class="text-2xl font-bold">Sign In</h1>
-            <p class="text-muted text-sm">Agency Workflow Automation Panel</p>
-        </div>
+  {% with messages = get_flashed_messages(with_categories=true) %} {% if
+  messages %} {% for category, message in messages %}
+  <div
+    class="auth-alert auth-alert-{{ 'danger' if category == 'error' else category }} mb-md"
+  >
+    {{ message }}
+  </div>
+  {% endfor %} {% endif %} {% endwith %}
 
-        {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-        {% for category, message in messages %}
-        <div class="alert alert-{{ category if category != 'error' else 'danger' }} mb-md">
-            {{ message }}
-        </div>
-        {% endfor %}
-        {% endif %}
-        {% endwith %}
+  <form method="POST" action="{{ url_for('auth.login') }}" class="auth-form">
+    <input
+      type="hidden"
+      name="next"
+      value="{{ request.args.get('next', '') }}"
+    />
 
-        <form method="POST" action="{{ url_for('auth.login') }}" class="flex flex-col gap-md">
-            <!-- Ensure redirect next argument carries over -->
-            <input type="hidden" name="next" value="{{ request.args.get('next', '') }}">
-
-            <div class="form-group flex flex-col gap-xs">
-                <label for="username" class="text-sm font-medium">Username</label>
-                <input type="text" id="username" name="username" class="input p-sm"
-                    style="border: 1px solid var(--border-color); border-radius: 4px;" required
-                    placeholder="Enter your username" autofocus>
-            </div>
-
-            <div class="form-group flex flex-col gap-xs">
-                <label for="password" class="text-sm font-medium">Password</label>
-                <input type="password" id="password" name="password" class="input p-sm"
-                    style="border: 1px solid var(--border-color); border-radius: 4px;" required
-                    placeholder="Enter your password">
-            </div>
-
-            <button type="submit" class="btn btn-primary mt-sm"
-                style="width: 100%; justify-content: center;">Login</button>
-
-            <div class="text-center mt-md">
-                <span class="text-sm text-muted">Don't have an account? <a href="{{ url_for('auth.signup') }}"
-                        style="color: var(--primary-color); text-decoration: none;">Sign up</a></span>
-            </div>
-        </form>
+    <div class="auth-field">
+      <label for="username" class="auth-label">Username</label>
+      <div class="auth-input-wrap">
+        <span class="auth-input-icon"
+          ><i data-lucide="user" style="width: 15px; height: 15px"></i
+        ></span>
+        <input
+          type="text"
+          id="username"
+          name="username"
+          class="auth-input"
+          placeholder="Enter your username"
+          required
+          autofocus
+        />
+      </div>
     </div>
+
+    <div class="auth-field">
+      <label for="password" class="auth-label">Password</label>
+      <div class="auth-input-wrap">
+        <span class="auth-input-icon"
+          ><i data-lucide="lock" style="width: 15px; height: 15px"></i
+        ></span>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          class="auth-input"
+          placeholder="Enter your password"
+          required
+        />
+      </div>
+    </div>
+
+    <button type="submit" class="auth-btn">Sign In</button>
+  </form>
+</div>
+
+<div class="auth-footer">
+  Don't have an account? <a href="{{ url_for('auth.signup') }}">Create one</a>
 </div>
 {% endblock %}

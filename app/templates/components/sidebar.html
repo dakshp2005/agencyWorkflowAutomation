@@ -1,50 +1,65 @@
 <div class="sidebar">
-    <div class="sidebar-logo">
-        <i data-lucide="zap" style="color:var(--accent); margin-right:8px;"></i> Automation
+  <div class="sidebar-logo">
+    <i data-lucide="zap" style="color: var(--accent); margin-right: 8px"></i>
+    Autsy
+  </div>
+  <div class="sidebar-nav">
+    <div class="nav-section">
+      <div class="nav-section-title">Main</div>
+      <a
+        href="{{ url_for('dashboard.index') }}"
+        class="nav-item {% if request.endpoint == 'dashboard.index' %}active{% endif %}"
+      >
+        <i data-lucide="layout-dashboard"></i> Dashboard
+      </a>
+      <a
+        href="{{ url_for('discovery.index') }}"
+        class="nav-item {% if 'discovery' in request.endpoint %}active{% endif %}"
+      >
+        <i data-lucide="binoculars"></i> Discovery
+      </a>
     </div>
-    <div class="sidebar-nav">
-        <div class="nav-section">
-            <div class="nav-section-title">Main</div>
-            <a href="{{ url_for('dashboard.index') }}"
-                class="nav-item {% if request.endpoint == 'dashboard.index' %}active{% endif %}">
-                <i data-lucide="layout-dashboard"></i> Dashboard
-            </a>
-            <a href="{{ url_for('discovery.index') }}"
-                class="nav-item {% if 'discovery' in request.endpoint %}active{% endif %}">
-                <i data-lucide="binoculars"></i> Discovery
-            </a>
-        </div>
 
-        <div class="nav-section">
-            <div class="nav-section-title">Clients</div>
-            <a href="{{ url_for('clients.index') }}"
-                class="nav-item {% if 'clients' in request.endpoint %}active{% endif %}">
-                <i data-lucide="users"></i> Clients
-            </a>
-        </div>
-
-        <div class="nav-section">
-            <div class="nav-section-title">Outreach</div>
-            <a href="{{ url_for('emails.index') }}"
-                class="nav-item {% if 'emails' in request.endpoint %}active{% endif %}">
-                <i data-lucide="mail"></i> Emails
-            </a>
-            <a href="{{ url_for('replies.index') }}"
-                class="nav-item {% if 'replies' in request.endpoint %}active{% endif %}">
-                <i data-lucide="message-square"></i> Replies
-            </a>
-        </div>
-
-        <div class="nav-section">
-            <div class="nav-section-title">Operations</div>
-            <a href="{{ url_for('meetings.index') }}"
-                class="nav-item {% if 'meetings' in request.endpoint %}active{% endif %}">
-                <i data-lucide="calendar"></i> Meetings
-            </a>
-            <a href="{{ url_for('documents.index') }}"
-                class="nav-item {% if 'documents' in request.endpoint %}active{% endif %}">
-                <i data-lucide="file-text"></i> Documents
-            </a>
-        </div>
+    <div class="nav-section">
+      <div class="nav-section-title">Clients</div>
+      <a
+        href="{{ url_for('clients.index') }}"
+        class="nav-item {% if 'clients' in request.endpoint %}active{% endif %}"
+      >
+        <i data-lucide="users"></i> Clients
+      </a>
     </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Outreach</div>
+      <a
+        href="{{ url_for('emails.index') }}"
+        class="nav-item {% if 'emails' in request.endpoint %}active{% endif %}"
+      >
+        <i data-lucide="mail"></i> Emails
+      </a>
+      <a
+        href="{{ url_for('replies.index') }}"
+        class="nav-item {% if 'replies' in request.endpoint %}active{% endif %}"
+      >
+        <i data-lucide="message-square"></i> Replies
+      </a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Operations</div>
+      <a
+        href="{{ url_for('meetings.index') }}"
+        class="nav-item {% if 'meetings' in request.endpoint %}active{% endif %}"
+      >
+        <i data-lucide="calendar"></i> Meetings
+      </a>
+      <a
+        href="{{ url_for('documents.index') }}"
+        class="nav-item {% if 'documents' in request.endpoint %}active{% endif %}"
+      >
+        <i data-lucide="file-text"></i> Documents
+      </a>
+    </div>
+  </div>
 </div>

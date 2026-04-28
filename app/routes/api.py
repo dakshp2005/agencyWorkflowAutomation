@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from urllib.parse import urlencode, quote
 from app.services.email_service import email_service
 from app.services.reply_classifier import reply_classifier
 from app.services.scheduler_service import scheduler_service
@@ -70,8 +71,19 @@ def generate_document():
 
 @bp.route('/approve/email/<int:id>', methods=['POST', 'GET'])
 def approve_email(id):
-    email_service.approve_and_send(id)
-    return jsonify({"status": "approved_and_sent"})
+    record = EmailRecord.query.get_or_404(id)
+    record.status = 'approved'
+    db.session.commit()
+
+    query = urlencode(
+        {
+            "subject": record.subject or "",
+            "body": record.body or ""
+        },
+        quote_via=quote,
+    )
+    compose_url = f"mailto:{record.client.email}?{query}"
+    return jsonify({"status": "approved", "compose_url": compose_url})
 
 @bp.route('/reject/email/<int:id>', methods=['POST', 'GET'])
 def reject_email(id):

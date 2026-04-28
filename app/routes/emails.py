@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
+from urllib.parse import urlencode, quote
 from app.models.email_record import EmailRecord
 from app.services.email_service import email_service
 from app.extensions import db
@@ -21,12 +22,21 @@ def detail(id):
 
 @bp.route('/<int:id>/approve', methods=['POST'])
 def approve(id):
-    try:
-        email_service.approve_and_send(id)
-        flash("Email approved and sent successfully.", "success")
-    except Exception as e:
-        flash(f"Error sending email: {str(e)}", "error")
-    return redirect(url_for('emails.index'))
+    email = EmailRecord.query.get_or_404(id)
+
+    # Mark as approved before handing off to the operator's mail client.
+    email.status = 'approved'
+    db.session.commit()
+
+    query = urlencode(
+        {
+            "subject": email.subject or "",
+            "body": email.body or ""
+        },
+        quote_via=quote,
+    )
+    mailto_url = f"mailto:{email.client.email}?{query}"
+    return redirect(mailto_url)
 
 @bp.route('/<int:id>/reject', methods=['POST'])
 def reject(id):
