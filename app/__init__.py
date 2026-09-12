@@ -31,7 +31,9 @@ def create_app(config_class=None):
     from app.routes.api import bp as api_bp
     from app.routes.auth import bp as auth_bp
     from app.routes.notifications import bp as notifications_bp
+    from app.routes.spa import spa
     
+    app.register_blueprint(spa)
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(clients_bp, url_prefix='/clients')
     app.register_blueprint(emails_bp, url_prefix='/emails')
@@ -52,6 +54,14 @@ def create_app(config_class=None):
     def require_login():
         from flask import request
         from flask_login import current_user
+        spa_endpoints = ['spa.login_page', 'spa.login', 'spa.register', 'spa.dashboard',
+                         'spa.dashboard_stats', 'spa.get_clients', 'spa.create_client',
+                         'spa.get_client', 'spa.update_client', 'spa.delete_client',
+                         'spa.get_emails', 'spa.get_meetings', 'spa.get_documents',
+                         'spa.get_leads', 'spa.get_activity', 'spa.get_notifications',
+                         'spa.notification_count', 'spa.logout']
+        if request.endpoint in spa_endpoints:
+            return
         allowed_endpoints = ['auth.login', 'auth.signup', 'static']
         if not current_user.is_authenticated and request.endpoint not in allowed_endpoints:
             return login_manager.unauthorized()
