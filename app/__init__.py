@@ -1,26 +1,26 @@
 import os
-import google.generativeai as genai
 from flask import Flask
 from app.extensions import db, migrate, login_manager
 from app.config import Config, DevelopmentConfig, ProductionConfig
 
 def create_app(config_class=None):
     app = Flask(__name__)
-    
+
     if config_class is None:
         config_class = ProductionConfig if os.getenv('FLASK_ENV') == 'production' else DevelopmentConfig
-    
+
     app.config.from_object(config_class)
-    
+
+    import google.generativeai as genai
     genai.configure(api_key=app.config["GEMINI_API_KEY"])
-    
+
     db.init_app(app)
     migrate.init_app(app, db)
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'
-    
+
     from app.models import client, email_record, reply, meeting, document, rag_document, interaction_log, notification
-    
+
     from app.routes.discovery import bp as discovery_bp
     from app.routes.dashboard import bp as dashboard_bp
     from app.routes.clients import bp as clients_bp
@@ -32,7 +32,7 @@ def create_app(config_class=None):
     from app.routes.auth import bp as auth_bp
     from app.routes.notifications import bp as notifications_bp
     from app.routes.spa import spa
-    
+
     app.register_blueprint(spa)
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(clients_bp, url_prefix='/clients')
@@ -44,7 +44,7 @@ def create_app(config_class=None):
     app.register_blueprint(auth_bp)
     app.register_blueprint(discovery_bp)
     app.register_blueprint(notifications_bp)
-    
+
     from app.models.user import User
     @login_manager.user_loader
     def load_user(user_id):
@@ -65,5 +65,5 @@ def create_app(config_class=None):
         allowed_endpoints = ['auth.login', 'auth.signup', 'static']
         if not current_user.is_authenticated and request.endpoint not in allowed_endpoints:
             return login_manager.unauthorized()
-            
+
     return app

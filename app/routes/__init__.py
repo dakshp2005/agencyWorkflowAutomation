@@ -1,9 +1,2 @@
-from .dashboard import bp as dashboard_bp
-from .clients import bp as clients_bp
-from .emails import bp as emails_bp
-from .replies import bp as replies_bp
-from .meetings import bp as meetings_bp
-from .documents import bp as documents_bp
-from .api import bp as api_bp
-from .auth import bp as auth_bp
-from .discovery import bp as discovery_bp
+# Routes are imported individually in app/__init__.py create_app()
+# Do NOT import all routes here - it causes heavy transitive imports

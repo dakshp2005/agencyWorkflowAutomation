@@ -11,11 +11,7 @@ from app.services.ai_utils import extract_json
 from app.config import Config
 from datetime import datetime
 
-try:
-    import spacy
-    nlp = spacy.load("en_core_web_sm")
-except Exception:
-    nlp = None
+nlp = None
 
 class ReplyClassifier:
 
@@ -104,6 +100,13 @@ class ReplyClassifier:
         return ""
 
     def _preprocess(self, text: str) -> str:
+        global nlp
+        if nlp is None:
+            try:
+                import spacy
+                nlp = spacy.load("en_core_web_sm")
+            except Exception:
+                nlp = False
         if nlp:
             doc = nlp(text[:5000])
             tokens = [t.lemma_ for t in doc if not t.is_stop and not t.is_punct and t.is_alpha]
