@@ -29,15 +29,15 @@ class RAGService:
         )
         return result['embedding']
 
-    def add_document(self, text: str, client_id: int, source_type: str) -> int:
-        chunks = self.splitter.split_text(text)
+    def add_document(self, content: str, client_id: int, source_type: str) -> int:
+        chunks = self.splitter.split_text(content)
         if not chunks:
             return None
 
         rag_doc = RAGDocument(
             client_id=client_id,
             source_type=source_type,
-            raw_text=text,
+            raw_text=content,
             chunk_count=len(chunks),
             faiss_ids=[]
         )
@@ -50,7 +50,7 @@ class RAGService:
             db.session.execute(
                 text("""
                     INSERT INTO rag_chunks (rag_document_id, client_id, chunk_text, chunk_index, embedding)
-                    VALUES (:rag_doc_id, :client_id, :chunk_text, :chunk_index, :embedding::vector)
+                    VALUES (:rag_doc_id, :client_id, :chunk_text, :chunk_index, CAST(:embedding AS vector))
                 """),
                 {
                     "rag_doc_id": rag_doc.id,
@@ -71,10 +71,10 @@ class RAGService:
         if client_id is not None:
             results = db.session.execute(
                 text("""
-                    SELECT chunk_text, 1 - (embedding <=> :query::vector) AS similarity
+                    SELECT chunk_text, 1 - (embedding <=> CAST(:query AS vector)) AS similarity
                     FROM rag_chunks
                     WHERE client_id = :client_id
-                    ORDER BY embedding <=> :query::vector
+                    ORDER BY embedding <=> CAST(:query AS vector)
                     LIMIT :limit
                 """),
                 {"query": embedding_str, "client_id": client_id, "limit": top_k}
@@ -82,9 +82,9 @@ class RAGService:
         else:
             results = db.session.execute(
                 text("""
-                    SELECT chunk_text, 1 - (embedding <=> :query::vector) AS similarity
+                    SELECT chunk_text, 1 - (embedding <=> CAST(:query AS vector)) AS similarity
                     FROM rag_chunks
-                    ORDER BY embedding <=> :query::vector
+                    ORDER BY embedding <=> CAST(:query AS vector)
                     LIMIT :limit
                 """),
                 {"query": embedding_str, "limit": top_k}
