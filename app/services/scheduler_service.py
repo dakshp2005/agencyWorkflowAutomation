@@ -9,36 +9,40 @@ from app.models.interaction_log import InteractionLog
 from app.services.slack_service import slack_service
 from app.extensions import db
 from app.config import Config
-import pickle, os
+import os, base64
 
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 
 class SchedulerService:
 
     def _get_calendar_service(self):
-        """Authenticate and return Google Calendar API service"""
         creds = None
-        token_path = "data/token.pickle"
-        if os.path.exists(token_path):
-            with open(token_path, "rb") as f:
-                creds = pickle.load(f)
+        token_data = os.environ.get('GOOGLE_CALENDAR_TOKEN')
+        
+        if token_data:
+            try:
+                token_json = json.loads(base64.b64decode(token_data).decode())
+                creds = Credentials.from_authorized_user_info(token_json, SCOPES)
+            except Exception:
+                pass
+        
         if not creds or not creds.valid:
             if creds and creds.expired and creds.refresh_token:
-                creds.refresh(Request())
+                try:
+                    creds.refresh(Request())
+                except Exception:
+                    return None
             else:
-                flow = InstalledAppFlow.from_client_secrets_file(
-                    Config.GOOGLE_CALENDAR_CREDENTIALS, SCOPES)
-                creds = flow.run_local_server(port=0)
-            with open(token_path, "wb") as f:
-                # auto-create directory if missing
-                os.makedirs(os.path.dirname(token_path), exist_ok=True)
-                pickle.dump(creds, f)
+                return None
+        
         return build('calendar', 'v3', credentials=creds)
 
     def get_free_slots(self, days_ahead: int = 7) -> list:
-        """Return list of free 1-hour slots in next N days (9am-6pm)"""
         try:
             service = self._get_calendar_service()
+            if not service:
+                raise ValueError("Calendar service not available")
+            
             now = datetime.utcnow()
             time_min = now.isoformat() + 'Z'
             time_max = (now + timedelta(days=days_ahead)).isoformat() + 'Z'
@@ -92,7 +96,6 @@ class SchedulerService:
             ]
 
     def propose_meeting(self, client_id: int, entities: dict = {}) -> int:
-        """Propose 3 meeting slots. Saves to DB. Notifies operator via Slack."""
         from app.models.client import Client
         client = Client.query.get(client_id)
         slots = self.get_free_slots()
@@ -122,27 +125,27 @@ class SchedulerService:
         return meeting.id
 
     def confirm_meeting(self, meeting_id: int, chosen_slot: str) -> dict:
-        """Confirm a slot, create Google Calendar event, update DB."""
         from app.models.client import Client
         meeting = Meeting.query.get_or_404(meeting_id)
         client = Client.query.get(meeting.client_id)
         
         try:
             service = self._get_calendar_service()
-            start_dt = datetime.fromisoformat(chosen_slot)
-            end_dt = start_dt + timedelta(hours=1)
-            
-            event = {
-                'summary': f'Meeting: {client.name} - {client.company}',
-                'description': meeting.agenda,
-                'start': {'dateTime': start_dt.isoformat(), 'timeZone': 'UTC'},
-                'end': {'dateTime': end_dt.isoformat(), 'timeZone': 'UTC'},
-                'attendees': [{'email': client.email}],
-                'reminders': {'useDefault': True}
-            }
-            created = service.events().insert(calendarId='primary', body=event, sendUpdates='all').execute()
-            meeting.calendar_event_id = created['id']
-            meeting.meeting_link = created.get('htmlLink', '')
+            if service:
+                start_dt = datetime.fromisoformat(chosen_slot)
+                end_dt = start_dt + timedelta(hours=1)
+                
+                event = {
+                    'summary': f'Meeting: {client.name} - {client.company}',
+                    'description': meeting.agenda,
+                    'start': {'dateTime': start_dt.isoformat(), 'timeZone': 'UTC'},
+                    'end': {'dateTime': end_dt.isoformat(), 'timeZone': 'UTC'},
+                    'attendees': [{'email': client.email}],
+                    'reminders': {'useDefault': True}
+                }
+                created = service.events().insert(calendarId='primary', body=event, sendUpdates='all').execute()
+                meeting.calendar_event_id = created['id']
+                meeting.meeting_link = created.get('htmlLink', '')
         except Exception as e:
             print(f"[Scheduler] Could not create calendar event: {e}")
         

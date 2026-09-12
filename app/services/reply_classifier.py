@@ -1,6 +1,5 @@
 import imaplib, email as email_lib, json, re
 from email.header import decode_header
-import spacy
 import google.generativeai as genai
 from app.models.reply import InboundReply
 from app.models.client import Client
@@ -13,8 +12,9 @@ from app.config import Config
 from datetime import datetime
 
 try:
+    import spacy
     nlp = spacy.load("en_core_web_sm")
-except OSError:
+except Exception:
     nlp = None
 
 class ReplyClassifier:
@@ -140,6 +140,7 @@ INTENTS:
 - GENERAL_INQUIRY: Other questions or generic replies.
 """
         try:
+            response = model.generate_content(prompt)
             data = extract_json(response.text)
             if not data or "classification" not in data:
                 raise ValueError("Invalid classification output")

@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Config:
-    SECRET_KEY = os.getenv("FLASK_SECRET_KEY", "dev-secret-change-in-prod")
+    SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-change-in-prod")
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL", "sqlite:///agency.db")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
@@ -14,7 +14,9 @@ class Config:
     SLACK_WEBHOOK_URL = os.getenv("SLACK_WEBHOOK_URL", "")
     GOOGLE_CALENDAR_CREDENTIALS = os.getenv("GOOGLE_CALENDAR_CREDENTIALS_JSON", "credentials.json")
     APP_BASE_URL = os.getenv("APP_BASE_URL", "http://localhost:5000")
-    FAISS_INDEX_PATH = os.getenv("FAISS_INDEX_PATH", "data/faiss_index")
+    
+    SUPABASE_URL = os.getenv("SUPABASE_URL", "")
+    SUPABASE_KEY = os.getenv("SUPABASE_KEY", "")
 
 class DevelopmentConfig(Config):
     DEBUG = True

@@ -1,10 +1,15 @@
+import os
 import google.generativeai as genai
 from flask import Flask
 from app.extensions import db, migrate, login_manager
-from app.config import Config, DevelopmentConfig
+from app.config import Config, DevelopmentConfig, ProductionConfig
 
-def create_app(config_class=DevelopmentConfig):
+def create_app(config_class=None):
     app = Flask(__name__)
+    
+    if config_class is None:
+        config_class = ProductionConfig if os.getenv('FLASK_ENV') == 'production' else DevelopmentConfig
+    
     app.config.from_object(config_class)
     
     genai.configure(api_key=app.config["GEMINI_API_KEY"])
@@ -38,9 +43,6 @@ def create_app(config_class=DevelopmentConfig):
     app.register_blueprint(discovery_bp)
     app.register_blueprint(notifications_bp)
     
-    with app.app_context():
-        db.create_all()
-
     from app.models.user import User
     @login_manager.user_loader
     def load_user(user_id):

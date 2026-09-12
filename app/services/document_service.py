@@ -1,6 +1,5 @@
 import os, json, re
 from datetime import datetime
-from pathlib import Path
 import google.generativeai as genai
 from app.models.document import Document
 from app.models.interaction_log import InteractionLog
@@ -11,12 +10,9 @@ from app.services.notification_service import notification_service
 from app.extensions import db
 from app.services.ai_utils import extract_json
 
-OUTPUT_DIR = Path("outputs")
-
 class DocumentService:
 
     def generate_proposal(self, client_id: int) -> dict:
-        """Generate a full proposal document for a client using RAG + Gemini"""
         client = Client.query.get_or_404(client_id)
         
         base_prompt = f"""
@@ -54,18 +50,12 @@ Return ONLY the proposal content in markdown. No JSON wrapper.
         
         title = f"Proposal for {client.company} — {datetime.now().strftime('%B %Y')}"
         
-        OUTPUT_DIR.mkdir(exist_ok=True)
-        (OUTPUT_DIR / "proposals").mkdir(exist_ok=True)
-        filename = f"proposal_{client_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.md"
-        file_path = OUTPUT_DIR / "proposals" / filename
-        file_path.write_text(content, encoding='utf-8')
-        
         doc = Document(
             client_id=client_id,
             title=title,
             doc_type="proposal",
             content=content,
-            file_path=str(file_path),
+            file_path=None,
             status="pending_approval"
         )
         db.session.add(doc)
@@ -79,7 +69,6 @@ Return ONLY the proposal content in markdown. No JSON wrapper.
         
         rag_service.add_document(content, client_id, "proposal")
         
-        # Create notification for document approval
         notification_service.notify_document_approval_required(doc.id, client.name, title)
         
         slack_service.notify_approval_required(
@@ -89,10 +78,9 @@ Return ONLY the proposal content in markdown. No JSON wrapper.
             preview=content[:300] + "..."
         )
         
-        return {"doc_id": doc.id, "title": title, "file_path": str(file_path)}
+        return {"doc_id": doc.id, "title": title}
 
     def generate_report(self, client_id: int, meeting_id: int = None) -> dict:
-        """Generate a post-meeting summary report"""
         client = Client.query.get_or_404(client_id)
         
         base_prompt = f"""
@@ -114,13 +102,9 @@ Format with markdown headers.
         content = response.text.strip()
         
         title = f"Meeting Report — {client.company} — {datetime.now().strftime('%B %d, %Y')}"
-        (OUTPUT_DIR / "reports").mkdir(parents=True, exist_ok=True)
-        filename = f"report_{client_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.md"
-        file_path = OUTPUT_DIR / "reports" / filename
-        file_path.write_text(content, encoding='utf-8')
         
         doc = Document(client_id=client_id, title=title, doc_type="report",
-                       content=content, file_path=str(file_path), status="draft")
+                       content=content, file_path=None, status="draft")
         db.session.add(doc)
         db.session.commit()
         return {"doc_id": doc.id, "title": title}

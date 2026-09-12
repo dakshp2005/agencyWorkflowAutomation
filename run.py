@@ -1,9 +1,7 @@
 from app import create_app
-from app.config import DevelopmentConfig
-from scheduler import start_scheduler
+import os
 
-app = create_app(DevelopmentConfig)
-start_scheduler(app)
+app = create_app()
 
 if __name__ == '__main__':
     with app.app_context():
